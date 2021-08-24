@@ -9,35 +9,29 @@ import (
 	"strings"
 )
 
-var url *string
-var username *string
-var password *string
-var isDefault *bool
-var sa_username *string
-var sa_password *string
-var sa_alias *string
-var sa_type *string
-var operation *string
-
 type ServiceAccounts struct {
+	url         string
+	username    string
+	password    string
+	sa_username string
+	sa_password string
+	sa_alias    string
+	operation   string
 }
 
-type ServiceAccountRequest struct {
+type serviceAccountRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Alias    string `json:"alias"`
 }
 
-type ServiceAccountResponse struct {
-}
-
-type ServiceAccount struct {
+type serviceAccount struct {
 	UUID     string `json:"uuid"`
 	Alias    string `json:"alias"`
 	Username string `json:"username"`
 }
 
-type Response struct {
+type response struct {
 	Embedded struct {
 		ServiceAccounts []struct {
 			UUID     string `json:"uuid"`
@@ -48,57 +42,57 @@ type Response struct {
 }
 
 func (serviceAccounts ServiceAccounts) Execute() {
-	validate()
+	serviceAccounts = serviceAccounts.validate()
 
-	request := Request{*url, *username, *password}
+	request := Request{serviceAccounts.url, serviceAccounts.username, serviceAccounts.password}
 	authResponse := Authenticate(request)
 
-	switch *operation {
+	switch serviceAccounts.operation {
 	case "create":
-		createServiceAccount(authResponse.Token)
+		serviceAccounts.createServiceAccount(authResponse.Token)
 	case "delete":
-		deleteServiceAccount(authResponse.Token)
+		serviceAccounts.deleteServiceAccount(authResponse.Token)
 	default:
 		fmt.Println("Operation not supported")
 		os.Exit(1)
 	}
 }
 
-func validate() {
+func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 	inputCmd := flag.NewFlagSet("serviceAccount", flag.ExitOnError)
-	operation = inputCmd.String("operation", "", "create, delete")
-	url = inputCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-	username = inputCmd.String("username", "", "Iris admin username")
-	password = inputCmd.String("password", "", "Iris admin password")
-	sa_username = inputCmd.String("service_username", "", "service account username")
-	sa_password = inputCmd.String("service_password", "", "service account password")
-	sa_alias = inputCmd.String("sa_alias", "", "service account alias")
-	isDefault = inputCmd.Bool("default", false, "service account default (false)")
-	sa_type = inputCmd.String("service_account_type", "", "service account type, ex: VCs, VRNIs, LINUX_VMs")
+	operation := inputCmd.String("operation", "", "create, delete")
+	url := inputCmd.String("url", "", "Iris URL, ex: appliance.example.com")
+	username := inputCmd.String("username", "", "Iris admin username")
+	password := inputCmd.String("password", "", "Iris admin password")
+	sa_username := inputCmd.String("service_username", "", "service account username")
+	sa_password := inputCmd.String("service_password", "", "service account password")
+	sa_alias := inputCmd.String("sa_alias", "", "service account alias")
 
 	inputCmd.Parse(os.Args[2:])
 
 	if (*url == "" || *username == "" || *password == "") ||
 		(*sa_username == "" || *sa_password == "" || *sa_alias == "") ||
-		(*isDefault && *sa_type == "") ||
 		(strings.Contains(*url, "https://")) {
 		fmt.Println("subcommand 'serviceAccount'")
 		inputCmd.PrintDefaults()
 		os.Exit(1)
 	}
+
+	serviceAccounts = ServiceAccounts{*url, *username, *password, *sa_username, *sa_password, *sa_alias, *operation}
+	return serviceAccounts
 }
 
-func createServiceAccount(token string) {
-	response := findServiceAccount(*sa_alias, token)
+func (serviceAccounts ServiceAccounts) createServiceAccount(token string) {
+	response := serviceAccounts.findServiceAccount(serviceAccounts.sa_alias, token)
 
 	if len(response.Embedded.ServiceAccounts) > 0 {
 		log.Println("Service Account already exists")
 	} else {
-		url := PROTOCOL + "://" + *url + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?action=register"
-		request := ServiceAccountRequest{*username, *password, *sa_alias}
+		url := PROTOCOL + "://" + serviceAccounts.url + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?action=register"
+		request := serviceAccountRequest{serviceAccounts.username, serviceAccounts.password, serviceAccounts.sa_alias}
 		body, _ := processRequest(token, url, "POST", request)
 
-		serviceAccount := ServiceAccount{}
+		serviceAccount := serviceAccount{}
 		err := json.Unmarshal(body, &serviceAccount)
 		if err != nil {
 			log.Println("Failed to parse the response body.\n[ERROR] -", err)
@@ -111,8 +105,8 @@ func createServiceAccount(token string) {
 	}
 }
 
-func findServiceAccount(alias string, token string) (response Response) {
-	url := PROTOCOL + "://" + *url + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?page=0&size=10&alias=" + alias
+func (serviceAccounts ServiceAccounts) findServiceAccount(alias string, token string) (response response) {
+	url := PROTOCOL + "://" + serviceAccounts.url + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?page=0&size=10&alias=" + alias
 	body, _ := processRequest(token, url, "GET", nil)
 
 	err := json.Unmarshal(body, &response)
@@ -120,19 +114,17 @@ func findServiceAccount(alias string, token string) (response Response) {
 		log.Println("Failed to parse the response body.\n[ERROR] -", err)
 		os.Exit(1)
 	}
-
-	log.Println(response)
 	return response
 }
 
-func deleteServiceAccount(token string) {
-	response := findServiceAccount(*sa_alias, token)
+func (serviceAccounts ServiceAccounts) deleteServiceAccount(token string) {
+	response := serviceAccounts.findServiceAccount(serviceAccounts.sa_alias, token)
 
 	if len(response.Embedded.ServiceAccounts) > 0 {
 
 		for _, serviceAccount := range response.Embedded.ServiceAccounts {
-			if serviceAccount.Alias == *sa_alias {
-				url := PROTOCOL + "://" + *url + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "/" + serviceAccount.UUID
+			if serviceAccount.Alias == serviceAccounts.sa_alias {
+				url := PROTOCOL + "://" + serviceAccounts.url + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "/" + serviceAccount.UUID
 				_, responseCode := processRequest(token, url, "DELETE", nil)
 
 				if responseCode == 200 {
