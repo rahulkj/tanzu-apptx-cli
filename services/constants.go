@@ -19,3 +19,8 @@ type Request struct {
 	Username string
 	Password string
 }
+
+const (
+	SERVICE_ACCOUNT_CMD = "serviceAccount"
+	GLOBAL_DEFAULT_CMD  = "globalDefault"
+)

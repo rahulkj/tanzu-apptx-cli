@@ -59,22 +59,22 @@ func (serviceAccounts ServiceAccounts) Execute() {
 }
 
 func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
-	inputCmd := flag.NewFlagSet("serviceAccount", flag.ExitOnError)
-	operation := inputCmd.String("operation", "", "create, delete")
-	url := inputCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-	username := inputCmd.String("username", "", "Iris admin username")
-	password := inputCmd.String("password", "", "Iris admin password")
-	sa_username := inputCmd.String("service_username", "", "service account username")
-	sa_password := inputCmd.String("service_password", "", "service account password")
-	sa_alias := inputCmd.String("sa_alias", "", "service account alias")
+	saCmd := flag.NewFlagSet(SERVICE_ACCOUNT_CMD, flag.ExitOnError)
+	operation := saCmd.String("operation", "", "create, delete")
+	url := saCmd.String("url", "", "Iris URL, ex: appliance.example.com")
+	username := saCmd.String("username", "", "Iris admin username")
+	password := saCmd.String("password", "", "Iris admin password")
+	sa_username := saCmd.String("service_username", "", "service account username")
+	sa_password := saCmd.String("service_password", "", "service account password")
+	sa_alias := saCmd.String("sa_alias", "", "service account alias")
 
-	inputCmd.Parse(os.Args[2:])
+	saCmd.Parse(os.Args[2:])
 
 	if (*url == "" || *username == "" || *password == "") ||
 		(*sa_username == "" || *sa_password == "" || *sa_alias == "") ||
 		(strings.Contains(*url, "https://")) {
 		fmt.Println("subcommand 'serviceAccount'")
-		inputCmd.PrintDefaults()
+		saCmd.PrintDefaults()
 		os.Exit(1)
 	}
 

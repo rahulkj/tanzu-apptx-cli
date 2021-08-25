@@ -62,7 +62,7 @@ func (globalDefaults GlobalDefaults) Execute() {
 }
 
 func (globalDefaults GlobalDefaults) validate() GlobalDefaults {
-	inputCmd := flag.NewFlagSet("globalDefaults", flag.ExitOnError)
+	inputCmd := flag.NewFlagSet(GLOBAL_DEFAULT_CMD, flag.ExitOnError)
 	url := inputCmd.String("url", "", "Iris URL, ex: appliance.example.com")
 	username := inputCmd.String("username", "", "Iris admin username")
 	password := inputCmd.String("password", "", "Iris admin password")
@@ -77,7 +77,7 @@ func (globalDefaults GlobalDefaults) validate() GlobalDefaults {
 		(*operation == "" || *sa_alias == "") ||
 		(*isDefault && *sa_type == "") ||
 		(strings.Contains(*url, "https://")) {
-		fmt.Println("subcommand 'globalDefaults'")
+		fmt.Println("subcommand 'globalDefault'")
 		inputCmd.PrintDefaults()
 		os.Exit(1)
 	}
