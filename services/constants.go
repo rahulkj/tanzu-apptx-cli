@@ -12,6 +12,7 @@ const (
 	VCENTERS         = "vcenters"
 	VRNIS            = "vrni"
 	VIRTUAL_MACHINES = "virtualmachines"
+	TASKS            = "tasks"
 )
 
 type Request struct {
@@ -23,4 +24,5 @@ type Request struct {
 const (
 	SERVICE_ACCOUNT_CMD = "serviceAccount"
 	GLOBAL_DEFAULT_CMD  = "globalDefault"
+	VCENTER_CMD         = "vCenter"
 )

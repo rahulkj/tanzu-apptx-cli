@@ -32,7 +32,6 @@ func Authenticate(request Request) (authResponse AuthResponse) {
 	}
 
 	resp, err := client.Post(url, "application/json", bytes.NewBuffer(reqBody))
-	// resp.Header.Add("Bearer", "token")
 	if err != nil {
 		log.Println("HTTP request failed.\n[ERROR] -", err)
 		os.Exit(1)

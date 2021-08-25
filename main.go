@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/rahulkj/iris-cli/services"
 )
@@ -14,16 +15,20 @@ func main() {
 		fmt.Println("subcommand is required")
 		fmt.Println("- " + services.SERVICE_ACCOUNT_CMD)
 		fmt.Println("- " + services.GLOBAL_DEFAULT_CMD)
+		fmt.Println("- " + services.VCENTER_CMD)
 		os.Exit(1)
 	}
 
-	switch os.Args[1] {
-	case services.SERVICE_ACCOUNT_CMD:
+	switch strings.ToLower(os.Args[1]) {
+	case strings.ToLower(services.SERVICE_ACCOUNT_CMD):
 		sa := services.ServiceAccounts{}
 		sa.Execute()
-	case services.GLOBAL_DEFAULT_CMD:
+	case strings.ToLower(services.GLOBAL_DEFAULT_CMD):
 		ga := services.GlobalDefaults{}
 		ga.Execute()
+	case strings.ToLower(services.VCENTER_CMD):
+		vc := services.VCenters{}
+		vc.Execute()
 	default:
 		fmt.Println("supported commands are:")
 		flag.PrintDefaults()
