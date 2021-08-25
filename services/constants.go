@@ -25,4 +25,5 @@ const (
 	SERVICE_ACCOUNT_CMD = "serviceAccount"
 	GLOBAL_DEFAULT_CMD  = "globalDefault"
 	VCENTER_CMD         = "vCenter"
+	VRNI_CMD            = "vRNI"
 )

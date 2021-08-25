@@ -57,9 +57,9 @@ func (vCenters VCenters) validate() VCenters {
 	url := inputCmd.String("url", "", "Iris URL, ex: appliance.example.com")
 	username := inputCmd.String("username", "", "Iris admin username")
 	password := inputCmd.String("password", "", "Iris admin password")
-	vc_fqdn := inputCmd.String("vc_fqdn", "", "vCenter FQDN")
-	vc_name := inputCmd.String("vc_name", "", "vCenter Name")
-	sa_alias := inputCmd.String("sa_alias", "", "service account alias")
+	vc_fqdn := inputCmd.String("vc-fqdn", "", "vCenter FQDN")
+	vc_name := inputCmd.String("vc-name", "", "vCenter Name")
+	sa_alias := inputCmd.String("sa-alias", "", "service account alias")
 	operation := inputCmd.String("operation", "", "create, delete")
 
 	inputCmd.Parse(os.Args[2:])
@@ -67,13 +67,13 @@ func (vCenters VCenters) validate() VCenters {
 	if (*url == "" || *username == "" || *password == "") ||
 		(*operation == "" || *vc_fqdn == "" || *vc_name == "") ||
 		(strings.Contains(*url, "https://")) {
-		fmt.Println("subcommand 'globalDefault'")
+		fmt.Println("subcommand 'vCenter'")
 		inputCmd.PrintDefaults()
 		os.Exit(1)
 	}
 
 	if *operation == "create" && *sa_alias == "" {
-		fmt.Println("subcommand 'globalDefault'")
+		fmt.Println("subcommand 'vCenter'")
 		inputCmd.PrintDefaults()
 		os.Exit(1)
 	}
@@ -106,9 +106,11 @@ func (vCenters VCenters) create(token string, request Request) {
 					status := tasks.MonitorTask(token, tasks.TaskId, request)
 					if status != "SUCCESS" {
 						log.Println("Failed to register vCenter with the provided information")
+					} else {
+						log.Println("Successfully registered vCenter with the provided information")
 					}
 				} else {
-					log.Println("Failed to register vCenter with the provided information")
+					log.Println("Failed to register vCenter with the provided information. Response Code:", responseCode)
 				}
 			} else {
 				log.Println("Cannot complete the operation as the Service Account does not exist")
@@ -121,29 +123,19 @@ func (vCenters VCenters) create(token string, request Request) {
 }
 
 func (vCenters VCenters) delete(token string, request Request) {
-	response := vCenters.findVCenter(token, request)
+	vCenterUUID := vCenters.findVCenter(token, request)
 
-	if len(response.Embedded.VCenters) > 0 {
-		for _, vCenter := range response.Embedded.VCenters {
-			if (vCenter.VCName == vCenters.vc_name) || (vCenter.Fqdn == vCenters.vc_fqdn) {
-				url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VCENTERS + "/" + vCenter.VCenterUUID
-				_, responseCode := processRequest(token, url, "DELETE", nil)
+	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VCENTERS + "/" + vCenterUUID
+	_, responseCode := processRequest(token, url, "DELETE", nil)
 
-				if responseCode == 200 {
-					log.Println("Successfully deleted vCenter")
-				} else {
-					log.Println("Failed to delete vCenter")
-				}
-			} else {
-				log.Println("Cannot delete vCenter as it does not exist")
-			}
-		}
+	if responseCode == 200 {
+		log.Println("Successfully deleted vCenter")
 	} else {
-		log.Println("Could not find the vCenter")
+		log.Println("Failed to delete vCenter. Response Code: ", responseCode)
 	}
 }
 
-func (vCenters VCenters) findVCenter(token string, request Request) (response VCenterResponse) {
+func (vCenters VCenters) findVCenter(token string, request Request) (vCenterUUID string) {
 
 	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VCENTERS + "?page=0&size=10"
 
@@ -157,11 +149,39 @@ func (vCenters VCenters) findVCenter(token string, request Request) (response VC
 
 	body, _ := processRequest(token, url, "GET", nil)
 
+	response := VCenterResponse{}
 	err := json.Unmarshal(body, &response)
 	if err != nil {
 		log.Println("Failed to parse the response body.\n[ERROR] -", err)
 		os.Exit(1)
 	}
 
-	return response
+	if len(response.Embedded.VCenters) > 0 {
+		for _, vCenter := range response.Embedded.VCenters {
+			if (vCenter.VCName == vCenters.vc_name) || (vCenter.Fqdn == vCenters.vc_fqdn) {
+				vCenterUUID = vCenter.VCenterUUID
+			} else {
+				log.Println("Cannot delete vCenter as it does not exist")
+			}
+		}
+	} else {
+		log.Println("Could not find the vCenter")
+	}
+
+	return vCenterUUID
+}
+
+func (vCenters VCenters) findAll(token string, request Request, vCentersCSV string) (vCenterUUIDs []string) {
+
+	vCentersArray := strings.Split(vCentersCSV, ",")
+
+	vCentersUUIDsArray := []string{}
+
+	for _, vcenter := range vCentersArray {
+		vCenter := VCenters{vc_name: vcenter}
+		vCenterUUID := vCenter.findVCenter(token, request)
+		vCentersUUIDsArray = append(vCentersUUIDsArray, vCenterUUID)
+	}
+
+	return vCentersUUIDsArray
 }

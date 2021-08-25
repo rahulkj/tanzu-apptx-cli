@@ -43,8 +43,8 @@ func (globalDefaults GlobalDefaults) validate() GlobalDefaults {
 	url := inputCmd.String("url", "", "Iris URL, ex: appliance.example.com")
 	username := inputCmd.String("username", "", "Iris admin username")
 	password := inputCmd.String("password", "", "Iris admin password")
-	sa_alias := inputCmd.String("sa_alias", "", "service account alias")
-	sa_type := inputCmd.String("service_account_type", "", "service account type, ex: VCs, VRNIs, LINUX_VMs")
+	sa_alias := inputCmd.String("sa-alias", "", "service account alias")
+	sa_type := inputCmd.String("service-account-type", "", "service account type, ex: VCs, VRNIs, LINUX_VMs")
 	operation := inputCmd.String("operation", "", "assign, reset")
 
 	inputCmd.Parse(os.Args[2:])
@@ -83,7 +83,7 @@ func (globalDefaults GlobalDefaults) assign(token string, request Request) {
 				if responseCode == 200 {
 					log.Println("Successfully assigned the service credential to the global default")
 				} else {
-					log.Println("Failed to assign the service credential to the global default")
+					log.Println("Failed to assign the service credential to the global default. Response code:", responseCode)
 				}
 			} else {
 				log.Println("Cannot complete the operation as the Service Account does not exist")
@@ -102,6 +102,6 @@ func (globalDefaults GlobalDefaults) reset(token string) {
 	if responseCode == 200 {
 		log.Println("Successfully reset the global default")
 	} else {
-		log.Println("Failed to reset the global default")
+		log.Println("Failed to reset the global default. Response code:", responseCode)
 	}
 }

@@ -16,6 +16,7 @@ func main() {
 		fmt.Println("- " + services.SERVICE_ACCOUNT_CMD)
 		fmt.Println("- " + services.GLOBAL_DEFAULT_CMD)
 		fmt.Println("- " + services.VCENTER_CMD)
+		fmt.Println("- " + services.VRNI_CMD)
 		os.Exit(1)
 	}
 
@@ -29,6 +30,9 @@ func main() {
 	case strings.ToLower(services.VCENTER_CMD):
 		vc := services.VCenters{}
 		vc.Execute()
+	case strings.ToLower(services.VRNI_CMD):
+		vr := services.VRNI{}
+		vr.Execute()
 	default:
 		fmt.Println("supported commands are:")
 		flag.PrintDefaults()

@@ -64,9 +64,9 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 	url := saCmd.String("url", "", "Iris URL, ex: appliance.example.com")
 	username := saCmd.String("username", "", "Iris admin username")
 	password := saCmd.String("password", "", "Iris admin password")
-	sa_username := saCmd.String("service_username", "", "service account username")
-	sa_password := saCmd.String("service_password", "", "service account password")
-	sa_alias := saCmd.String("sa_alias", "", "service account alias")
+	sa_username := saCmd.String("service-username", "", "service account username")
+	sa_password := saCmd.String("service-password", "", "service account password")
+	sa_alias := saCmd.String("sa-alias", "", "service account alias")
 
 	saCmd.Parse(os.Args[2:])
 
@@ -130,7 +130,7 @@ func (serviceAccounts ServiceAccounts) deleteServiceAccount(token string, reques
 				if responseCode == 200 {
 					log.Println("Deleted Service Account")
 				} else {
-					log.Println("Failed to delete Service Account")
+					log.Println("Failed to delete Service Account. Response Code:", responseCode)
 				}
 			} else {
 				log.Println("Cannot delete Service Account as it does not exist")
