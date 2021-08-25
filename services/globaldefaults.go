@@ -29,7 +29,7 @@ func (globalDefaults GlobalDefaults) Execute() {
 
 	switch globalDefaults.operation {
 	case "assign":
-		globalDefaults.assign(authResponse.Token)
+		globalDefaults.assign(authResponse.Token, request)
 	case "reset":
 		globalDefaults.reset(authResponse.Token)
 	default:
@@ -67,15 +67,15 @@ func (globalDefaults GlobalDefaults) validate() GlobalDefaults {
 	return globalDefaults
 }
 
-func (globalDefaults GlobalDefaults) assign(token string) {
+func (globalDefaults GlobalDefaults) assign(token string, request Request) {
 	serviceAccounts := ServiceAccounts{}
-	response := serviceAccounts.findServiceAccount(globalDefaults.sa_alias, token)
+	response := serviceAccounts.findServiceAccount(globalDefaults.sa_alias, token, request)
 
 	if len(response.Embedded.ServiceAccounts) > 0 {
 
 		for _, serviceAccount := range response.Embedded.ServiceAccounts {
 			if serviceAccount.Alias == globalDefaults.sa_alias {
-				url := PROTOCOL + "://" + globalDefaults.url + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "/defaults/" + globalDefaults.sa_type
+				url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "/defaults/" + globalDefaults.sa_type
 
 				request := GlobalDefaultRequest{serviceAccount.UUID}
 				_, responseCode := processRequest(token, url, "POST", request)

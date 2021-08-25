@@ -49,9 +49,9 @@ func (serviceAccounts ServiceAccounts) Execute() {
 
 	switch serviceAccounts.operation {
 	case "create":
-		serviceAccounts.createServiceAccount(authResponse.Token)
+		serviceAccounts.createServiceAccount(authResponse.Token, request)
 	case "delete":
-		serviceAccounts.deleteServiceAccount(authResponse.Token)
+		serviceAccounts.deleteServiceAccount(authResponse.Token, request)
 	default:
 		fmt.Println("Operation not supported")
 		os.Exit(1)
@@ -82,13 +82,13 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 	return serviceAccounts
 }
 
-func (serviceAccounts ServiceAccounts) createServiceAccount(token string) {
-	response := serviceAccounts.findServiceAccount(serviceAccounts.sa_alias, token)
+func (serviceAccounts ServiceAccounts) createServiceAccount(token string, request Request) {
+	response := serviceAccounts.findServiceAccount(serviceAccounts.sa_alias, token, request)
 
 	if len(response.Embedded.ServiceAccounts) > 0 {
 		log.Println("Service Account already exists")
 	} else {
-		url := PROTOCOL + "://" + serviceAccounts.url + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?action=register"
+		url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?action=register"
 		request := serviceAccountRequest{serviceAccounts.username, serviceAccounts.password, serviceAccounts.sa_alias}
 		body, _ := processRequest(token, url, "POST", request)
 
@@ -105,8 +105,8 @@ func (serviceAccounts ServiceAccounts) createServiceAccount(token string) {
 	}
 }
 
-func (serviceAccounts ServiceAccounts) findServiceAccount(alias string, token string) (response response) {
-	url := PROTOCOL + "://" + serviceAccounts.url + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?page=0&size=10&alias=" + alias
+func (serviceAccounts ServiceAccounts) findServiceAccount(alias string, token string, request Request) (response response) {
+	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?page=0&size=10&alias=" + alias
 	body, _ := processRequest(token, url, "GET", nil)
 
 	err := json.Unmarshal(body, &response)
@@ -117,14 +117,14 @@ func (serviceAccounts ServiceAccounts) findServiceAccount(alias string, token st
 	return response
 }
 
-func (serviceAccounts ServiceAccounts) deleteServiceAccount(token string) {
-	response := serviceAccounts.findServiceAccount(serviceAccounts.sa_alias, token)
+func (serviceAccounts ServiceAccounts) deleteServiceAccount(token string, request Request) {
+	response := serviceAccounts.findServiceAccount(serviceAccounts.sa_alias, token, request)
 
 	if len(response.Embedded.ServiceAccounts) > 0 {
 
 		for _, serviceAccount := range response.Embedded.ServiceAccounts {
 			if serviceAccount.Alias == serviceAccounts.sa_alias {
-				url := PROTOCOL + "://" + serviceAccounts.url + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "/" + serviceAccount.UUID
+				url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "/" + serviceAccount.UUID
 				_, responseCode := processRequest(token, url, "DELETE", nil)
 
 				if responseCode == 200 {
