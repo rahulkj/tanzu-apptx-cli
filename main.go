@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/rahulkj/iris-cli/services"
+	"gitlab.eng.vmware.com/vmware-navigator-practice/tooling/iris-cli/services"
 )
 
 func main() {
@@ -19,7 +19,7 @@ func main() {
 		fmt.Printf("  %s \t\t%s \n", services.GLOBAL_DEFAULT_CMD, "Global Defaults operations")
 		fmt.Printf("  %s \t\t\t%s \n", services.VCENTER_CMD, "vCenter operations")
 		fmt.Printf("  %s \t\t\t\t%s \n", services.VRNI_CMD, "vRNI operations")
-		fmt.Printf("  %s \t\t\t\t%s \n", services.QUESTIONS_CMD, "Questions operations")
+		// fmt.Printf("  %s \t\t\t\t%s \n", services.QUESTIONS_CMD, "Questions operations")
 		os.Exit(1)
 	}
 
