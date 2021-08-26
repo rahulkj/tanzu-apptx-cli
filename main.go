@@ -12,11 +12,14 @@ import (
 func main() {
 
 	if len(os.Args) < 2 {
-		fmt.Println("subcommand is required")
-		fmt.Println("- " + services.SERVICE_ACCOUNT_CMD)
-		fmt.Println("- " + services.GLOBAL_DEFAULT_CMD)
-		fmt.Println("- " + services.VCENTER_CMD)
-		fmt.Println("- " + services.VRNI_CMD)
+		fmt.Println("Usage: 'iris-cli [command]' \n")
+
+		fmt.Println("Available Commands:")
+		fmt.Printf("  %s \t\t%s \n", services.SERVICE_ACCOUNT_CMD, "Service Accounts operations")
+		fmt.Printf("  %s \t\t%s \n", services.GLOBAL_DEFAULT_CMD, "Global Defaults operations")
+		fmt.Printf("  %s \t\t\t%s \n", services.VCENTER_CMD, "vCenter operations")
+		fmt.Printf("  %s \t\t\t\t%s \n", services.VRNI_CMD, "vRNI operations")
+		fmt.Printf("  %s \t\t\t\t%s \n", services.QUESTIONS_CMD, "Questions operations")
 		os.Exit(1)
 	}
 

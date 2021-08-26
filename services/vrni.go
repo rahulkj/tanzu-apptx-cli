@@ -52,71 +52,156 @@ func (vRNI VRNI) Execute() {
 	authResponse := Authenticate(request)
 
 	switch vRNI.operation {
-	case "create":
-		vRNI.create(authResponse.Token, request)
-	case "delete":
-		vRNI.delete(authResponse.Token, request)
-	case "update-credentials":
+	case REGISTER:
+		vRNI.register(authResponse.Token, request)
+	case UNREGISTER:
+		vRNI.unregister(authResponse.Token, request)
+	case UPDATE_CREDENTIALS:
 		vRNI.update(authResponse.Token, request)
-	case "add-vcenters":
+	case ADD_VCENTERS:
 		vRNI.addVcenters(authResponse.Token, request)
-	case "remove-vcenters":
+	case REMOVE_VCENTERS:
 		vRNI.deleteVcenters(authResponse.Token, request)
 	default:
-		fmt.Println("Operation not supported")
+		fmt.Println("Operation not supported \n")
+		vRNI.printUsage()
 		os.Exit(1)
 	}
 }
 
 func (vRNI VRNI) validate() VRNI {
-	vrniCmd := flag.NewFlagSet(VRNI_CMD, flag.ExitOnError)
-	url := vrniCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-	username := vrniCmd.String("username", "", "Iris admin username")
-	password := vrniCmd.String("password", "", "Iris admin password")
+	registerCmd := flag.NewFlagSet(REGISTER, flag.ExitOnError)
+	unregisterCmd := flag.NewFlagSet(UNREGISTER, flag.ExitOnError)
+	updateCredentialsCmd := flag.NewFlagSet(UPDATE_CREDENTIALS, flag.ExitOnError)
+	addVcentersCmd := flag.NewFlagSet(ADD_VCENTERS, flag.ExitOnError)
+	removeVcentersCmd := flag.NewFlagSet(REMOVE_VCENTERS, flag.ExitOnError)
 
-	vrni_fqdn := vrniCmd.String("vrni-fqdn", "", "vCenter FQDN")
-	vc_names := vrniCmd.String("vc-names", "", "comma separated list of vCenter Name(s)")
-	sa_alias := vrniCmd.String("sa-alias", "", "vRNI service account alias")
-	is_SaaS := vrniCmd.Bool("isSaaS", false, "using a SaaS vRNI instance, default is false")
-	vrni_api_token := vrniCmd.String("vrni-api-token", "", "SaaS vRNI api token")
-
-	operation := vrniCmd.String("operation", "", "create, delete, update-credentials, add-vcenters, remove-vcenters")
-
-	vrniCmd.Parse(os.Args[2:])
-
-	if (*url == "" || *username == "" || *password == "") ||
-		(*operation == "" || *vrni_fqdn == "") ||
-		(strings.Contains(*url, "https://")) ||
-		(*is_SaaS && *vrni_api_token == "" && *sa_alias != "") ||
-		(!*is_SaaS && *sa_alias == "" && *vrni_api_token != "") {
-		fmt.Println("subcommand 'vRNI'")
-		vrniCmd.PrintDefaults()
-		os.Exit(1)
+	if len(os.Args) < 3 {
+		vRNI.printUsage()
 	}
 
-	if *operation == "create" && (*sa_alias == "" || *vc_names == "") {
-		fmt.Println("subcommand 'vRNI'")
-		vrniCmd.PrintDefaults()
-		os.Exit(1)
-	} else if *operation == "update-credentials" && (*sa_alias == "" || *vrni_api_token != "") {
-		fmt.Println("subcommand 'vRNI'")
-		vrniCmd.PrintDefaults()
-		os.Exit(1)
-	} else if *operation == "add-vcenters" && (*vc_names == "") {
-		fmt.Println("subcommand 'vRNI'")
-		vrniCmd.PrintDefaults()
-		os.Exit(1)
-	} else if *operation == "remove-vcenters" && (*vc_names == "") {
-		fmt.Println("subcommand 'vRNI'")
-		vrniCmd.PrintDefaults()
-		os.Exit(1)
+	operation := os.Args[2]
+
+	var url *string
+	var username *string
+	var password *string
+	var vrni_fqdn *string
+	var vc_names *string
+	var sa_alias *string
+	var is_SaaS *bool
+	var vrni_api_token *string
+
+	if operation == REGISTER {
+		url = registerCmd.String("url", "", "Iris URL, ex: appliance.example.com")
+		username = registerCmd.String("username", "", "Iris admin username")
+		password = registerCmd.String("password", "", "Iris admin password")
+		vrni_fqdn = registerCmd.String("vrni-fqdn", "", "vCenter FQDN")
+		vc_names = registerCmd.String("vc-names", "", "comma separated list of vCenter Name(s)")
+		sa_alias = registerCmd.String("sa-alias", "", "vRNI service account alias")
+		is_SaaS = registerCmd.Bool("isSaaS", false, "using a SaaS vRNI instance, default is false")
+		vrni_api_token = registerCmd.String("vrni-api-token", "", "SaaS vRNI api token")
+
+		registerCmd.Parse(os.Args[3:])
+
+		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
+			(len(*vrni_fqdn) == 0 || len(*vc_names) == 0) ||
+			(strings.Contains(*url, "https://")) ||
+			(*is_SaaS && len(*vrni_api_token) == 0 && len(*sa_alias) != 0) ||
+			(!*is_SaaS && len(*sa_alias) == 0 && len(*vrni_api_token) != 0) {
+			fmt.Println("Usage: 'iris-cli vRNI register [flags]' \n")
+			fmt.Println("Flags:")
+			registerCmd.PrintDefaults()
+			os.Exit(1)
+		}
+	} else if operation == UNREGISTER {
+		url = unregisterCmd.String("url", "", "Iris URL, ex: appliance.example.com")
+		username = unregisterCmd.String("username", "", "Iris admin username")
+		password = unregisterCmd.String("password", "", "Iris admin password")
+		vrni_fqdn = unregisterCmd.String("vrni-fqdn", "", "vCenter FQDN")
+
+		unregisterCmd.Parse(os.Args[3:])
+
+		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
+			(len(*vrni_fqdn) == 0) ||
+			(strings.Contains(*url, "https://")) {
+			fmt.Println("Usage: 'iris-cli vRNI unregister [flags]' \n")
+			fmt.Println("Flags:")
+			unregisterCmd.PrintDefaults()
+			os.Exit(1)
+		}
+	} else if operation == UPDATE_CREDENTIALS {
+		url = updateCredentialsCmd.String("url", "", "Iris URL, ex: appliance.example.com")
+		username = updateCredentialsCmd.String("username", "", "Iris admin username")
+		password = updateCredentialsCmd.String("password", "", "Iris admin password")
+		vrni_fqdn = updateCredentialsCmd.String("vrni-fqdn", "", "vCenter FQDN")
+		sa_alias = updateCredentialsCmd.String("sa-alias", "", "vRNI service account alias")
+		vrni_api_token = updateCredentialsCmd.String("vrni-api-token", "", "SaaS vRNI api token")
+
+		updateCredentialsCmd.Parse(os.Args[3:])
+
+		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
+			(len(*vrni_fqdn) == 0) ||
+			(strings.Contains(*url, "https://")) ||
+			(len(*vrni_api_token) == 0 || len(*sa_alias) != 0) {
+			fmt.Println("Usage: 'iris-cli vRNI update-credentials [flags]' \n")
+			fmt.Println("Flags:")
+			updateCredentialsCmd.PrintDefaults()
+			os.Exit(1)
+		}
+	} else if operation == ADD_VCENTERS {
+		url = addVcentersCmd.String("url", "", "Iris URL, ex: appliance.example.com")
+		username = addVcentersCmd.String("username", "", "Iris admin username")
+		password = addVcentersCmd.String("password", "", "Iris admin password")
+		vrni_fqdn = addVcentersCmd.String("vrni-fqdn", "", "vCenter FQDN")
+		vc_names = addVcentersCmd.String("vc-names", "", "comma separated list of vCenter Name(s)")
+
+		addVcentersCmd.Parse(os.Args[3:])
+
+		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
+			(len(*vrni_fqdn) == 0 || len(*vc_names) == 0) ||
+			(strings.Contains(*url, "https://")) {
+			fmt.Println("Usage: 'iris-cli vRNI add-vcenters [flags]' \n")
+			fmt.Println("Flags:")
+			addVcentersCmd.PrintDefaults()
+			os.Exit(1)
+		}
+	} else if operation == REMOVE_VCENTERS {
+		url = removeVcentersCmd.String("url", "", "Iris URL, ex: appliance.example.com")
+		username = removeVcentersCmd.String("username", "", "Iris admin username")
+		password = removeVcentersCmd.String("password", "", "Iris admin password")
+		vrni_fqdn = removeVcentersCmd.String("vrni-fqdn", "", "vCenter FQDN")
+		vc_names = removeVcentersCmd.String("vc-names", "", "comma separated list of vCenter Name(s)")
+
+		removeVcentersCmd.Parse(os.Args[3:])
+
+		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
+			(len(*vrni_fqdn) == 0 || len(*vc_names) == 0) ||
+			(strings.Contains(*url, "https://")) {
+			fmt.Println("Usage: 'iris-cli vRNI remove-vcenters [flags]' \n")
+			fmt.Println("Flags:")
+			removeVcentersCmd.PrintDefaults()
+			os.Exit(1)
+		}
+	} else {
+		vRNI.printUsage()
 	}
 
-	vRNI = VRNI{*url, *username, *password, *sa_alias, *vrni_fqdn, *vc_names, *is_SaaS, *vrni_api_token, *operation}
+	vRNI = VRNI{*url, *username, *password, *sa_alias, *vrni_fqdn, *vc_names, *is_SaaS, *vrni_api_token, operation}
 	return vRNI
 }
 
-func (vRNI VRNI) create(token string, request Request) {
+func (vRNI VRNI) printUsage() {
+	fmt.Println("Usage: 'iris-cli vRNI [command]' \n")
+	fmt.Println("Available Commands:")
+	fmt.Printf("  %s \t\t\t%s \n", REGISTER, "Register vRNI instance")
+	fmt.Printf("  %s \t\t\t%s \n", UNREGISTER, "Remove vRNI instance")
+	fmt.Printf("  %s \t\t%s \n", UPDATE_CREDENTIALS, "Update credentials for the vRNI instance")
+	fmt.Printf("  %s \t\t\t%s \n", ADD_VCENTERS, "Add vCenters to the vRNI instance")
+	fmt.Printf("  %s \t\t%s \n", REMOVE_VCENTERS, "Remove vCenters from the vRNI instance")
+	os.Exit(1)
+}
+
+func (vRNI VRNI) register(token string, request Request) {
 	vCenters := VCenters{}
 	vCenterUUIDs := vCenters.findAll(token, request, vRNI.vc_names)
 
@@ -160,7 +245,7 @@ func (vRNI VRNI) create(token string, request Request) {
 	}
 }
 
-func (vRNI VRNI) delete(token string, request Request) {
+func (vRNI VRNI) unregister(token string, request Request) {
 	vrniResponses := vRNI.findAll(token, request)
 	for _, vrniResponse := range vrniResponses {
 		if vrniResponse.IP == vRNI.vrni_fqdn {

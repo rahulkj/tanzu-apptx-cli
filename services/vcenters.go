@@ -42,47 +42,86 @@ func (vCenters VCenters) Execute() {
 	authResponse := Authenticate(request)
 
 	switch vCenters.operation {
-	case "create":
-		vCenters.create(authResponse.Token, request)
-	case "delete":
-		vCenters.delete(authResponse.Token, request)
+	case "register":
+		vCenters.register(authResponse.Token, request)
+	case "unregister":
+		vCenters.unregister(authResponse.Token, request)
 	default:
-		fmt.Println("Operation not supported")
+		fmt.Println("Operation not supported \n")
+		vCenters.printUsage()
 		os.Exit(1)
 	}
+}
+
+func (vCenters VCenters) printUsage() {
+	fmt.Println("Usage: 'iris-cli vCenter [command]' \n")
+	fmt.Println("Available Commands:")
+	fmt.Printf("  %s \t\t\t%s \n", REGISTER, "Register vCenter instance")
+	fmt.Printf("  %s \t\t\t%s \n", UNREGISTER, "Remove vCenter instance")
+	os.Exit(1)
 }
 
 func (vCenters VCenters) validate() VCenters {
-	inputCmd := flag.NewFlagSet(VCENTER_CMD, flag.ExitOnError)
-	url := inputCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-	username := inputCmd.String("username", "", "Iris admin username")
-	password := inputCmd.String("password", "", "Iris admin password")
-	vc_fqdn := inputCmd.String("vc-fqdn", "", "vCenter FQDN")
-	vc_name := inputCmd.String("vc-name", "", "vCenter Name")
-	sa_alias := inputCmd.String("sa-alias", "", "service account alias")
-	operation := inputCmd.String("operation", "", "create, delete")
+	registerCmd := flag.NewFlagSet(REGISTER, flag.ExitOnError)
+	unregisterCmd := flag.NewFlagSet(UNREGISTER, flag.ExitOnError)
 
-	inputCmd.Parse(os.Args[2:])
-
-	if (*url == "" || *username == "" || *password == "") ||
-		(*operation == "" || *vc_fqdn == "" || *vc_name == "") ||
-		(strings.Contains(*url, "https://")) {
-		fmt.Println("subcommand 'vCenter'")
-		inputCmd.PrintDefaults()
-		os.Exit(1)
+	if len(os.Args) < 3 {
+		vCenters.printUsage()
 	}
 
-	if *operation == "create" && *sa_alias == "" {
-		fmt.Println("subcommand 'vCenter'")
-		inputCmd.PrintDefaults()
-		os.Exit(1)
+	operation := os.Args[2]
+
+	var url *string
+	var username *string
+	var password *string
+	var vc_fqdn *string
+	var vc_name *string
+	var sa_alias *string
+
+	if operation == REGISTER {
+		url = registerCmd.String("url", "", "Iris URL, ex: appliance.example.com")
+		username = registerCmd.String("username", "", "Iris admin username")
+		password = registerCmd.String("password", "", "Iris admin password")
+		vc_fqdn = registerCmd.String("vc-fqdn", "", "vCenter FQDN")
+		vc_name = registerCmd.String("vc-name", "", "vCenter Name")
+		sa_alias = registerCmd.String("sa-alias", "", "service account alias")
+
+		registerCmd.Parse(os.Args[3:])
+
+		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
+			(len(*vc_fqdn) == 0 || len(*vc_name) == 0 || len(*sa_alias) == 0) ||
+			(strings.Contains(*url, "https://")) {
+			fmt.Println("Usage: 'iris-cli vCenter register [flags]' \n")
+			fmt.Println("Flags:")
+			registerCmd.PrintDefaults()
+			os.Exit(1)
+		}
+	} else if operation == UNREGISTER {
+		url = unregisterCmd.String("url", "", "Iris URL, ex: appliance.example.com")
+		username = unregisterCmd.String("username", "", "Iris admin username")
+		password = unregisterCmd.String("password", "", "Iris admin password")
+		vc_fqdn = unregisterCmd.String("vc-fqdn", "", "vCenter FQDN")
+		vc_name = unregisterCmd.String("vc-name", "", "vCenter Name")
+
+		unregisterCmd.Parse(os.Args[3:])
+
+		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
+			(len(*vc_fqdn) == 0 || len(*vc_name) == 0) ||
+			(strings.Contains(*url, "https://")) {
+			fmt.Println("Usage: 'iris-cli vCenter unregister [flags]' \n")
+			fmt.Println("Flags:")
+			unregisterCmd.PrintDefaults()
+			os.Exit(1)
+		}
+	} else {
+		vCenters.printUsage()
 	}
 
-	vCenters = VCenters{*url, *username, *password, *sa_alias, *vc_fqdn, *vc_name, *operation}
+	vCenters = VCenters{*url, *username, *password, *sa_alias, *vc_fqdn, *vc_name, operation}
 	return vCenters
 }
 
-func (vCenters VCenters) create(token string, request Request) {
+func (vCenters VCenters) register(token string, request Request) {
 	serviceAccounts := ServiceAccounts{}
 	response := serviceAccounts.findServiceAccount(vCenters.sa_alias, token, request)
 
@@ -122,7 +161,7 @@ func (vCenters VCenters) create(token string, request Request) {
 	}
 }
 
-func (vCenters VCenters) delete(token string, request Request) {
+func (vCenters VCenters) unregister(token string, request Request) {
 	vCenterUUID := vCenters.findVCenter(token, request)
 
 	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VCENTERS + "/" + vCenterUUID

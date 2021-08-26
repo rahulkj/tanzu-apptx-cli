@@ -26,4 +26,17 @@ const (
 	GLOBAL_DEFAULT_CMD  = "globalDefault"
 	VCENTER_CMD         = "vCenter"
 	VRNI_CMD            = "vRNI"
+	QUESTIONS_CMD       = "questions"
+)
+
+const (
+	ASSIGN             = "assign"
+	CREATE             = "create"
+	DELETE             = "delete"
+	REGISTER           = "register"
+	RESET              = "reset"
+	UNREGISTER         = "unregister"
+	UPDATE_CREDENTIALS = "update-credentials"
+	ADD_VCENTERS       = "add-vcenters"
+	REMOVE_VCENTERS    = "remove-vcenters"
 )

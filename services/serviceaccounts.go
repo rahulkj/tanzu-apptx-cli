@@ -48,38 +48,82 @@ func (serviceAccounts ServiceAccounts) Execute() {
 	authResponse := Authenticate(request)
 
 	switch serviceAccounts.operation {
-	case "create":
+	case REGISTER:
 		serviceAccounts.createServiceAccount(authResponse.Token, request)
-	case "delete":
+	case UNREGISTER:
 		serviceAccounts.deleteServiceAccount(authResponse.Token, request)
 	default:
 		fmt.Println("Operation not supported")
+		serviceAccounts.printUsage()
 		os.Exit(1)
 	}
 }
 
 func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
-	saCmd := flag.NewFlagSet(SERVICE_ACCOUNT_CMD, flag.ExitOnError)
-	operation := saCmd.String("operation", "", "create, delete")
-	url := saCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-	username := saCmd.String("username", "", "Iris admin username")
-	password := saCmd.String("password", "", "Iris admin password")
-	sa_username := saCmd.String("service-username", "", "service account username")
-	sa_password := saCmd.String("service-password", "", "service account password")
-	sa_alias := saCmd.String("sa-alias", "", "service account alias")
+	registerCmd := flag.NewFlagSet(REGISTER, flag.ExitOnError)
+	unregisterCmd := flag.NewFlagSet(UNREGISTER, flag.ExitOnError)
 
-	saCmd.Parse(os.Args[2:])
-
-	if (*url == "" || *username == "" || *password == "") ||
-		(*sa_username == "" || *sa_password == "" || *sa_alias == "") ||
-		(strings.Contains(*url, "https://")) {
-		fmt.Println("subcommand 'serviceAccount'")
-		saCmd.PrintDefaults()
-		os.Exit(1)
+	if len(os.Args) < 3 {
+		serviceAccounts.printUsage()
 	}
 
-	serviceAccounts = ServiceAccounts{*url, *username, *password, *sa_username, *sa_password, *sa_alias, *operation}
+	operation := os.Args[2]
+
+	var url *string
+	var username *string
+	var password *string
+	var sa_username *string
+	var sa_password *string
+	var sa_alias *string
+
+	if operation == REGISTER {
+		url = registerCmd.String("url", "", "Iris URL, ex: appliance.example.com")
+		username = registerCmd.String("username", "", "Iris admin username")
+		password = registerCmd.String("password", "", "Iris admin password")
+		sa_username = registerCmd.String("service-username", "", "service account username")
+		sa_password = registerCmd.String("service-password", "", "service account password")
+		sa_alias = registerCmd.String("sa-alias", "", "service account alias")
+
+		registerCmd.Parse(os.Args[3:])
+
+		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
+			(len(*sa_username) == 0 || len(*sa_password) == 0 || len(*sa_alias) == 0) ||
+			(strings.Contains(*url, "https://")) {
+			fmt.Println("Usage: 'iris-cli serviceAccount register [flags]' \n")
+			fmt.Println("Flags:")
+			registerCmd.PrintDefaults()
+			os.Exit(1)
+		}
+	} else if operation == UNREGISTER {
+		url = unregisterCmd.String("url", "", "Iris URL, ex: appliance.example.com")
+		username = unregisterCmd.String("username", "", "Iris admin username")
+		password = unregisterCmd.String("password", "", "Iris admin password")
+		sa_alias = unregisterCmd.String("sa-alias", "", "service account alias")
+
+		unregisterCmd.Parse(os.Args[3:])
+
+		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
+			(len(*sa_alias) == 0) ||
+			(strings.Contains(*url, "https://")) {
+			fmt.Println("Usage: 'iris-cli serviceAccount unregister [flags]' \n")
+			fmt.Println("Flags:")
+			unregisterCmd.PrintDefaults()
+			os.Exit(1)
+		}
+	} else {
+		serviceAccounts.printUsage()
+	}
+
+	serviceAccounts = ServiceAccounts{*url, *username, *password, *sa_username, *sa_password, *sa_alias, operation}
 	return serviceAccounts
+}
+
+func (serviceAccounts ServiceAccounts) printUsage() {
+	fmt.Println("Usage: 'iris-cli serviceAccount [command]' \n")
+	fmt.Println("Available Commands:")
+	fmt.Printf("  %s \t\t\t%s \n", REGISTER, "Register service account")
+	fmt.Printf("  %s \t\t\t%s \n", UNREGISTER, "Unregister service account")
+	os.Exit(1)
 }
 
 func (serviceAccounts ServiceAccounts) createServiceAccount(token string, request Request) {
