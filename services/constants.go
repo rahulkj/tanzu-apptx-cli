@@ -30,13 +30,16 @@ const (
 )
 
 const (
-	ASSIGN             = "assign"
-	CREATE             = "create"
-	DELETE             = "delete"
-	REGISTER           = "register"
-	RESET              = "reset"
-	UNREGISTER         = "unregister"
-	UPDATE_CREDENTIALS = "update-credentials"
-	ADD_VCENTERS       = "add-vcenters"
-	REMOVE_VCENTERS    = "remove-vcenters"
+	ASSIGN                = "assign"
+	CREATE                = "create"
+	DELETE                = "delete"
+	REGISTER              = "register"
+	RESET                 = "reset"
+	UNREGISTER            = "unregister"
+	UPDATE_CREDENTIALS    = "update-credentials"
+	ADD_VCENTERS          = "add-vcenters"
+	REMOVE_VCENTERS       = "remove-vcenters"
+	SYNC_VCENTERS         = "sync"
+	SCAN_VIRTUAL_MACHINES = "scan-virtual-machines"
+	SCAN_COMPONENTS       = "scan-components"
 )
