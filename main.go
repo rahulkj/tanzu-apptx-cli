@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -12,15 +11,7 @@ import (
 func main() {
 
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: 'iris-cli [command]' \n")
-
-		fmt.Println("Available Commands:")
-		fmt.Printf("  %s \t\t%s \n", services.SERVICE_ACCOUNT_CMD, "Service Accounts operations")
-		fmt.Printf("  %s \t\t%s \n", services.GLOBAL_DEFAULT_CMD, "Global Defaults operations")
-		fmt.Printf("  %s \t\t\t%s \n", services.VCENTER_CMD, "vCenter operations")
-		fmt.Printf("  %s \t\t\t\t%s \n", services.VRNI_CMD, "vRNI operations")
-		// fmt.Printf("  %s \t\t\t\t%s \n", services.QUESTIONS_CMD, "Questions operations")
-		os.Exit(1)
+		printUsage()
 	}
 
 	switch strings.ToLower(os.Args[1]) {
@@ -36,9 +27,23 @@ func main() {
 	case strings.ToLower(services.VRNI_CMD):
 		vr := services.VRNI{}
 		vr.Execute()
+	case strings.ToLower(services.VIRTUAL_MACHINES):
+		vm := services.VirtualMachines{}
+		vm.Execute()
 	default:
-		fmt.Println("supported commands are:")
-		flag.PrintDefaults()
+		printUsage()
 		os.Exit(1)
 	}
+}
+
+func printUsage() {
+	fmt.Println("Usage: 'iris-cli [command]' \n")
+
+	fmt.Println("Available Commands:")
+	fmt.Printf("  %s \t\t%s \n", services.SERVICE_ACCOUNT_CMD, "Service Accounts operations")
+	fmt.Printf("  %s \t\t%s \n", services.GLOBAL_DEFAULT_CMD, "Global Defaults operations")
+	fmt.Printf("  %s \t\t\t%s \n", services.VCENTER_CMD, "vCenter operations")
+	fmt.Printf("  %s \t\t\t\t%s \n", services.VRNI_CMD, "vRNI operations")
+	fmt.Printf("  %s \t\t%s \n", services.VIRTUAL_MACHINES, "Virtual Machines operations")
+	os.Exit(1)
 }

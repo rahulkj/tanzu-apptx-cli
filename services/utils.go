@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-func getHttpsClient() *http.Client {
+func getHTTPSClient() *http.Client {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
@@ -39,7 +39,7 @@ func processRequest(token string, url string, method string, payload interface{}
 	req.Header.Add("Authorization", "Bearer "+token)
 	req.Header.Add("Content-Type", "application/json")
 
-	resp, err := getHttpsClient().Do(req)
+	resp, err := getHTTPSClient().Do(req)
 	if err != nil {
 		log.Println("HTTP request failed.\n[ERROR] -", err)
 		os.Exit(1)

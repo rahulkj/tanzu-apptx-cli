@@ -13,9 +13,9 @@ type VCenters struct {
 	url       string
 	username  string
 	password  string
-	sa_alias  string
-	vc_fqdn   string
-	vc_name   string
+	saAlias   string
+	vcFqdn    string
+	vcName    string
 	operation string
 }
 
@@ -33,21 +33,21 @@ type VCenter struct {
 }
 
 type Datacenter struct {
-	ModId    string `json:"modId"`
+	ModID    string `json:"modId"`
 	Name     string `json:"name"`
 	Type     string `json:"type"`
 	Clusters []struct {
-		ModId         string `json:"modId"`
+		ModID         string `json:"modId"`
 		Name          string `json:"name"`
 		Type          string `json:"type"`
 		ResourcePools []struct {
-			ModId string `json:"modId"`
+			ModID string `json:"modId"`
 			Name  string `json:"name"`
 			Type  string `json:"type"`
 		} `json:"resourcePools"`
 	} `json:"clusters"`
 	Folders []struct {
-		ModId string `json:"modId"`
+		ModID string `json:"modId"`
 		Name  string `json:"name"`
 		Type  string `json:"type"`
 	} `json:"folders"`
@@ -114,98 +114,95 @@ func (vCenters VCenters) validate() VCenters {
 
 	operation := os.Args[2]
 
-	var url *string
-	var username *string
-	var password *string
-	var vc_fqdn *string
-	var vc_name *string
-	var sa_alias *string
+	var url string
+	var username string
+	var password string
+	var vcFqdn string
+	var vcName string
+	var saAlias string
 
 	if operation == REGISTER {
-		url = registerCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-		username = registerCmd.String("username", "", "Iris admin username")
-		password = registerCmd.String("password", "", "Iris admin password")
-		vc_fqdn = registerCmd.String("vc-fqdn", "", "vCenter FQDN")
-		vc_name = registerCmd.String("vc-name", "", "vCenter Name")
-		sa_alias = registerCmd.String("sa-alias", "", "service account alias")
+		registerCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
+		registerCmd.StringVar(&username, "username", "", "Iris admin username")
+		registerCmd.StringVar(&password, "password", "", "Iris admin password")
+		registerCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
+		registerCmd.StringVar(&vcName, "vc-name", "", "vCenter Name")
+		registerCmd.StringVar(&saAlias, "sa-alias", "", "service account alias")
 
 		registerCmd.Parse(os.Args[3:])
 
-		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
-			(len(*vc_fqdn) == 0 || len(*vc_name) == 0 || len(*sa_alias) == 0) ||
-			(strings.Contains(*url, "https://")) {
+		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
+			(len(vcFqdn) == 0 || len(vcName) == 0 || len(saAlias) == 0) ||
+			(strings.Contains(url, "https://")) {
 			fmt.Println("Usage: 'iris-cli vCenter register [flags]' \n")
 			fmt.Println("Flags:")
 			registerCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == UNREGISTER {
-		url = unregisterCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-		username = unregisterCmd.String("username", "", "Iris admin username")
-		password = unregisterCmd.String("password", "", "Iris admin password")
-		vc_fqdn = unregisterCmd.String("vc-fqdn", "", "vCenter FQDN")
-		vc_name = unregisterCmd.String("vc-name", "", "vCenter Name")
-		sa_alias = new(string)
+		unregisterCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
+		unregisterCmd.StringVar(&username, "username", "", "Iris admin username")
+		unregisterCmd.StringVar(&password, "password", "", "Iris admin password")
+		unregisterCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
+		unregisterCmd.StringVar(&vcName, "vc-name", "", "vCenter Name")
+		// saAlias = new(string)
 
 		unregisterCmd.Parse(os.Args[3:])
 
-		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
-			(len(*vc_fqdn) == 0 && len(*vc_name) == 0) ||
-			(strings.Contains(*url, "https://")) {
+		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
+			(len(vcFqdn) == 0 && len(vcName) == 0) ||
+			(strings.Contains(url, "https://")) {
 			fmt.Println("Usage: 'iris-cli vCenter unregister [flags]' \n")
 			fmt.Println("Flags:")
 			unregisterCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == SYNC_VCENTERS {
-		url = syncVCenterCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-		username = syncVCenterCmd.String("username", "", "Iris admin username")
-		password = syncVCenterCmd.String("password", "", "Iris admin password")
-		vc_fqdn = syncVCenterCmd.String("vc-fqdn", "", "vCenter FQDN")
-		vc_name = syncVCenterCmd.String("vc-name", "", "vCenter Name")
-		sa_alias = new(string)
+		syncVCenterCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
+		syncVCenterCmd.StringVar(&username, "username", "", "Iris admin username")
+		syncVCenterCmd.StringVar(&password, "password", "", "Iris admin password")
+		syncVCenterCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
+		syncVCenterCmd.StringVar(&vcName, "vc-name", "", "vCenter Name")
 
 		syncVCenterCmd.Parse(os.Args[3:])
 
-		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
-			(len(*vc_fqdn) == 0 && len(*vc_name) == 0) ||
-			(strings.Contains(*url, "https://")) {
+		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
+			(len(vcFqdn) == 0 && len(vcName) == 0) ||
+			(strings.Contains(url, "https://")) {
 			fmt.Println("Usage: 'iris-cli vCenter sync [flags]' \n")
 			fmt.Println("Flags:")
 			syncVCenterCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == SCAN_VIRTUAL_MACHINES {
-		url = scanVirtualMachinesCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-		username = scanVirtualMachinesCmd.String("username", "", "Iris admin username")
-		password = scanVirtualMachinesCmd.String("password", "", "Iris admin password")
-		vc_fqdn = scanVirtualMachinesCmd.String("vc-fqdn", "", "vCenter FQDN")
-		vc_name = scanVirtualMachinesCmd.String("vc-name", "", "vCenter Name")
-		sa_alias = new(string)
+		scanVirtualMachinesCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
+		scanVirtualMachinesCmd.StringVar(&username, "username", "", "Iris admin username")
+		scanVirtualMachinesCmd.StringVar(&password, "password", "", "Iris admin password")
+		scanVirtualMachinesCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
+		scanVirtualMachinesCmd.StringVar(&vcName, "vc-name", "", "vCenter Name")
 
 		scanVirtualMachinesCmd.Parse(os.Args[3:])
 
-		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
-			(len(*vc_fqdn) == 0 && len(*vc_name) == 0) ||
-			(strings.Contains(*url, "https://")) {
+		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
+			(len(vcFqdn) == 0 && len(vcName) == 0) ||
+			(strings.Contains(url, "https://")) {
 			fmt.Println("Usage: 'iris-cli vCenter scan-virtual-machines [flags]' \n")
 			fmt.Println("Flags:")
 			scanVirtualMachinesCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == SCAN_COMPONENTS {
-		url = scanComponentsCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-		username = scanComponentsCmd.String("username", "", "Iris admin username")
-		password = scanComponentsCmd.String("password", "", "Iris admin password")
-		vc_fqdn = scanComponentsCmd.String("vc-fqdn", "", "vCenter FQDN")
-		vc_name = scanComponentsCmd.String("vc-name", "", "vCenter Name")
-		sa_alias = new(string)
+		scanComponentsCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
+		scanComponentsCmd.StringVar(&username, "username", "", "Iris admin username")
+		scanComponentsCmd.StringVar(&password, "password", "", "Iris admin password")
+		scanComponentsCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
+		scanComponentsCmd.StringVar(&vcName, "vc-name", "", "vCenter Name")
 
 		scanComponentsCmd.Parse(os.Args[3:])
 
-		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
-			(len(*vc_fqdn) == 0 && len(*vc_name) == 0) ||
-			(strings.Contains(*url, "https://")) {
+		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
+			(len(vcFqdn) == 0 && len(vcName) == 0) ||
+			(strings.Contains(url, "https://")) {
 			fmt.Println("Usage: 'iris-cli vCenter scan-components [flags]' \n")
 			fmt.Println("Flags:")
 			scanComponentsCmd.PrintDefaults()
@@ -215,21 +212,21 @@ func (vCenters VCenters) validate() VCenters {
 		vCenters.printUsage()
 	}
 
-	vCenters = VCenters{*url, *username, *password, *sa_alias, *vc_fqdn, *vc_name, operation}
+	vCenters = VCenters{url, username, password, saAlias, vcFqdn, vcName, operation}
 	return vCenters
 }
 
 func (vCenters VCenters) register(token string, request Request) {
 	serviceAccounts := ServiceAccounts{}
-	response := serviceAccounts.findServiceAccount(vCenters.sa_alias, token, request)
+	response := serviceAccounts.findServiceAccount(vCenters.saAlias, token, request)
 
 	if len(response.Embedded.ServiceAccounts) > 0 {
 
 		for _, serviceAccount := range response.Embedded.ServiceAccounts {
-			if serviceAccount.Alias == vCenters.sa_alias {
+			if serviceAccount.Alias == vCenters.saAlias {
 				url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VCENTERS + "?action=register"
 
-				vcRequest := VCenterRequest{vCenters.vc_fqdn, vCenters.vc_name, serviceAccount.UUID}
+				vcRequest := VCenterRequest{vCenters.vcFqdn, vCenters.vcName, serviceAccount.UUID}
 				body, responseCode := processRequest(token, url, "POST", vcRequest)
 
 				if responseCode == 202 {
@@ -240,7 +237,9 @@ func (vCenters VCenters) register(token string, request Request) {
 						os.Exit(1)
 					}
 
-					status := tasks.MonitorTask(token, tasks.TaskId, request)
+					log.Println("Submitted the request and the taskID is:", tasks.TaskID)
+
+					status := tasks.MonitorTask(token, tasks.TaskID, request)
 					if status != "SUCCESS" {
 						log.Println("Failed to register vCenter with the provided information")
 					} else {
@@ -276,12 +275,12 @@ func (vCenters VCenters) findVCenter(token string, request Request) (response VC
 
 	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VCENTERS + "?page=0&size=10"
 
-	if len(vCenters.vc_name) > 0 {
-		url = url + "&vcName=" + vCenters.vc_name
+	if len(vCenters.vcName) > 0 {
+		url = url + "&vcName=" + vCenters.vcName
 	}
 
-	if len(vCenters.vc_fqdn) > 0 {
-		url = url + "&fqdn=" + vCenters.vc_fqdn
+	if len(vCenters.vcFqdn) > 0 {
+		url = url + "&fqdn=" + vCenters.vcFqdn
 	}
 
 	body, _ := processRequest(token, url, "GET", nil)
@@ -295,7 +294,7 @@ func (vCenters VCenters) findVCenter(token string, request Request) (response VC
 
 	if len(vCenterResponse.Embedded.VCenters) > 0 {
 		for _, vCenter := range vCenterResponse.Embedded.VCenters {
-			if (vCenter.VCName == vCenters.vc_name) || (vCenter.Fqdn == vCenters.vc_fqdn) {
+			if (vCenter.VCName == vCenters.vcName) || (vCenter.Fqdn == vCenters.vcFqdn) {
 				response = vCenter
 			} else {
 				log.Println("Cannot find the vCenter as it does not exist")
@@ -315,7 +314,7 @@ func (vCenters VCenters) findAll(token string, request Request, vCentersCSV stri
 	vCentersUUIDsArray := []string{}
 
 	for _, vcenter := range vCentersArray {
-		vCenter := VCenters{vc_name: vcenter}
+		vCenter := VCenters{vcName: vcenter}
 		vCenterResponse := vCenter.findVCenter(token, request)
 		vCentersUUIDsArray = append(vCentersUUIDsArray, vCenterResponse.VCenterUUID)
 	}
@@ -338,7 +337,9 @@ func (vCenters VCenters) syncVcenters(token string, request Request) {
 			os.Exit(1)
 		}
 
-		status := tasks.MonitorTask(token, tasks.TaskId, request)
+		log.Println("Submitted the request and the taskID is:", tasks.TaskID)
+
+		status := tasks.MonitorTask(token, tasks.TaskID, request)
 		if status != "SUCCESS" {
 			log.Println("Failed to execute sync on the vCenter provided")
 		} else {
@@ -367,7 +368,9 @@ func (vCenters VCenters) scanVirtualMachines(token string, request Request) {
 			os.Exit(1)
 		}
 
-		status := tasks.MonitorTask(token, tasks.TaskId, request)
+		log.Println("Submitted the request and the taskID is:", tasks.TaskID)
+
+		status := tasks.MonitorTask(token, tasks.TaskID, request)
 		if status != "SUCCESS" {
 			log.Println("Failed to scan virtual machines managed by the provided vCenter")
 		} else {
@@ -396,7 +399,9 @@ func (vCenters VCenters) scanComponents(token string, request Request) {
 			os.Exit(1)
 		}
 
-		status := tasks.MonitorTask(token, tasks.TaskId, request)
+		log.Println("Submitted the request and the taskID is:", tasks.TaskID)
+
+		status := tasks.MonitorTask(token, tasks.TaskID, request)
 		if status != "SUCCESS" {
 			log.Println("Failed to scan components running on the virtual machines managed by the provided vCenter")
 		} else {

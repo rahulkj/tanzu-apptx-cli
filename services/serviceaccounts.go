@@ -10,13 +10,13 @@ import (
 )
 
 type ServiceAccounts struct {
-	url         string
-	username    string
-	password    string
-	sa_username string
-	sa_password string
-	sa_alias    string
-	operation   string
+	url        string
+	username   string
+	password   string
+	saUsername string
+	saPassword string
+	saAlias    string
+	operation  string
 }
 
 type serviceAccountRequest struct {
@@ -69,42 +69,42 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 
 	operation := os.Args[2]
 
-	var url *string
-	var username *string
-	var password *string
-	var sa_username *string
-	var sa_password *string
-	var sa_alias *string
+	var url string
+	var username string
+	var password string
+	var saUsername string
+	var saPassword string
+	var saAlias string
 
 	if operation == REGISTER {
-		url = registerCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-		username = registerCmd.String("username", "", "Iris admin username")
-		password = registerCmd.String("password", "", "Iris admin password")
-		sa_username = registerCmd.String("service-username", "", "service account username")
-		sa_password = registerCmd.String("service-password", "", "service account password")
-		sa_alias = registerCmd.String("sa-alias", "", "service account alias")
+		registerCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
+		registerCmd.StringVar(&username, "username", "", "Iris admin username")
+		registerCmd.StringVar(&password, "password", "", "Iris admin password")
+		registerCmd.StringVar(&saUsername, "service-username", "", "service account username")
+		registerCmd.StringVar(&saPassword, "service-password", "", "service account password")
+		registerCmd.StringVar(&saAlias, "sa-alias", "", "service account alias")
 
 		registerCmd.Parse(os.Args[3:])
 
-		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
-			(len(*sa_username) == 0 || len(*sa_password) == 0 || len(*sa_alias) == 0) ||
-			(strings.Contains(*url, "https://")) {
+		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
+			(len(saUsername) == 0 || len(saPassword) == 0 || len(saAlias) == 0) ||
+			(strings.Contains(url, "https://")) {
 			fmt.Println("Usage: 'iris-cli serviceAccount register [flags]' \n")
 			fmt.Println("Flags:")
 			registerCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == UNREGISTER {
-		url = unregisterCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-		username = unregisterCmd.String("username", "", "Iris admin username")
-		password = unregisterCmd.String("password", "", "Iris admin password")
-		sa_alias = unregisterCmd.String("sa-alias", "", "service account alias")
+		unregisterCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
+		unregisterCmd.StringVar(&username, "username", "", "Iris admin username")
+		unregisterCmd.StringVar(&password, "password", "", "Iris admin password")
+		unregisterCmd.StringVar(&saAlias, "sa-alias", "", "service account alias")
 
 		unregisterCmd.Parse(os.Args[3:])
 
-		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
-			(len(*sa_alias) == 0) ||
-			(strings.Contains(*url, "https://")) {
+		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
+			(len(saAlias) == 0) ||
+			(strings.Contains(url, "https://")) {
 			fmt.Println("Usage: 'iris-cli serviceAccount unregister [flags]' \n")
 			fmt.Println("Flags:")
 			unregisterCmd.PrintDefaults()
@@ -114,7 +114,7 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 		serviceAccounts.printUsage()
 	}
 
-	serviceAccounts = ServiceAccounts{*url, *username, *password, *sa_username, *sa_password, *sa_alias, operation}
+	serviceAccounts = ServiceAccounts{url, username, password, saUsername, saPassword, saAlias, operation}
 	return serviceAccounts
 }
 
@@ -127,13 +127,13 @@ func (serviceAccounts ServiceAccounts) printUsage() {
 }
 
 func (serviceAccounts ServiceAccounts) createServiceAccount(token string, request Request) {
-	response := serviceAccounts.findServiceAccount(serviceAccounts.sa_alias, token, request)
+	response := serviceAccounts.findServiceAccount(serviceAccounts.saAlias, token, request)
 
 	if len(response.Embedded.ServiceAccounts) > 0 {
 		log.Println("Service Account already exists")
 	} else {
 		url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?action=register"
-		request := serviceAccountRequest{serviceAccounts.username, serviceAccounts.password, serviceAccounts.sa_alias}
+		request := serviceAccountRequest{serviceAccounts.username, serviceAccounts.password, serviceAccounts.saAlias}
 		body, _ := processRequest(token, url, "POST", request)
 
 		serviceAccount := serviceAccount{}
@@ -162,12 +162,12 @@ func (serviceAccounts ServiceAccounts) findServiceAccount(alias string, token st
 }
 
 func (serviceAccounts ServiceAccounts) deleteServiceAccount(token string, request Request) {
-	response := serviceAccounts.findServiceAccount(serviceAccounts.sa_alias, token, request)
+	response := serviceAccounts.findServiceAccount(serviceAccounts.saAlias, token, request)
 
 	if len(response.Embedded.ServiceAccounts) > 0 {
 
 		for _, serviceAccount := range response.Embedded.ServiceAccounts {
-			if serviceAccount.Alias == serviceAccounts.sa_alias {
+			if serviceAccount.Alias == serviceAccounts.saAlias {
 				url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "/" + serviceAccount.UUID
 				_, responseCode := processRequest(token, url, "DELETE", nil)
 

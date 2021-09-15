@@ -21,7 +21,7 @@ func Authenticate(request Request) (authResponse AuthResponse) {
 
 	authRequest := AuthRequest{request.Username, request.Password}
 
-	client := getHttpsClient()
+	client := getHTTPSClient()
 
 	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SESSION
 	reqBody, err := json.Marshal(authRequest)

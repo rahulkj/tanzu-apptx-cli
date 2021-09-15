@@ -12,8 +12,8 @@ type GlobalDefaults struct {
 	url       string
 	username  string
 	password  string
-	sa_alias  string
-	sa_type   string
+	saAlias   string
+	saType    string
 	operation string
 }
 
@@ -49,40 +49,40 @@ func (globalDefaults GlobalDefaults) validate() GlobalDefaults {
 
 	operation := os.Args[2]
 
-	var url *string
-	var username *string
-	var password *string
-	var sa_alias *string
-	var sa_type *string
+	var url string
+	var username string
+	var password string
+	var saAlias string
+	var saType string
 
 	if operation == ASSIGN {
-		url = assignCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-		username = assignCmd.String("username", "", "Iris admin username")
-		password = assignCmd.String("password", "", "Iris admin password")
-		sa_type = assignCmd.String("service-account-type", "", "service account type, ex: VCs, VRNIs, LINUX_VMs")
-		sa_alias = assignCmd.String("sa-alias", "", "service account alias")
+		assignCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
+		assignCmd.StringVar(&username, "username", "", "Iris admin username")
+		assignCmd.StringVar(&password, "password", "", "Iris admin password")
+		assignCmd.StringVar(&saType, "service-account-type", "", "service account type, ex: VCs, VRNIs, LINUX_VMs")
+		assignCmd.StringVar(&saAlias, "sa-alias", "", "service account alias")
 
 		assignCmd.Parse(os.Args[3:])
 
-		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
-			(len(*sa_type) == 0 || len(*sa_alias) == 0) ||
-			(strings.Contains(*url, "https://")) {
+		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
+			(len(saType) == 0 || len(saAlias) == 0) ||
+			(strings.Contains(url, "https://")) {
 			fmt.Println("Usage: 'iris-cli globalDefault assign [flags]' \n")
 			fmt.Println("Flags:")
 			assignCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == RESET {
-		url = resetCmd.String("url", "", "Iris URL, ex: appliance.example.com")
-		username = resetCmd.String("username", "", "Iris admin username")
-		password = resetCmd.String("password", "", "Iris admin password")
-		sa_type = resetCmd.String("service-account-type", "", "service account type, ex: VCs, VRNIs, LINUX_VMs")
+		resetCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
+		resetCmd.StringVar(&username, "username", "", "Iris admin username")
+		resetCmd.StringVar(&password, "password", "", "Iris admin password")
+		resetCmd.StringVar(&saType, "service-account-type", "", "service account type, ex: VCs, VRNIs, LINUX_VMs")
 
 		resetCmd.Parse(os.Args[3:])
 
-		if (len(*url) == 0 || len(*username) == 0 || len(*password) == 0) ||
-			(len(*sa_type) == 0) ||
-			(strings.Contains(*url, "https://")) {
+		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
+			(len(saType) == 0) ||
+			(strings.Contains(url, "https://")) {
 			fmt.Println("Usage: 'iris-cli globalDefault reset [flags]' \n")
 			fmt.Println("Flags:")
 			resetCmd.PrintDefaults()
@@ -92,7 +92,7 @@ func (globalDefaults GlobalDefaults) validate() GlobalDefaults {
 		globalDefaults.printUsage()
 	}
 
-	globalDefaults = GlobalDefaults{*url, *username, *password, *sa_alias, *sa_type, operation}
+	globalDefaults = GlobalDefaults{url, username, password, saAlias, saType, operation}
 	return globalDefaults
 }
 
@@ -106,13 +106,13 @@ func (globalDefaults GlobalDefaults) printUsage() {
 
 func (globalDefaults GlobalDefaults) assign(token string, request Request) {
 	serviceAccounts := ServiceAccounts{}
-	response := serviceAccounts.findServiceAccount(globalDefaults.sa_alias, token, request)
+	response := serviceAccounts.findServiceAccount(globalDefaults.saAlias, token, request)
 
 	if len(response.Embedded.ServiceAccounts) > 0 {
 
 		for _, serviceAccount := range response.Embedded.ServiceAccounts {
-			if serviceAccount.Alias == globalDefaults.sa_alias {
-				url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "/defaults/" + globalDefaults.sa_type
+			if serviceAccount.Alias == globalDefaults.saAlias {
+				url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "/defaults/" + globalDefaults.saType
 
 				request := GlobalDefaultRequest{serviceAccount.UUID}
 				_, responseCode := processRequest(token, url, "POST", request)
@@ -133,7 +133,7 @@ func (globalDefaults GlobalDefaults) assign(token string, request Request) {
 }
 
 func (globalDefaults GlobalDefaults) reset(token string) {
-	url := PROTOCOL + "://" + globalDefaults.url + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "/defaults/" + globalDefaults.sa_type
+	url := PROTOCOL + "://" + globalDefaults.url + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "/defaults/" + globalDefaults.saType
 	_, responseCode := processRequest(token, url, "DELETE", nil)
 
 	if responseCode == 200 {

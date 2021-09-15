@@ -33,8 +33,10 @@ const (
 	ASSIGN                = "assign"
 	CREATE                = "create"
 	DELETE                = "delete"
+	GET                   = "get"
 	REGISTER              = "register"
 	RESET                 = "reset"
+	LIST                  = "list"
 	UNREGISTER            = "unregister"
 	UPDATE_CREDENTIALS    = "update-credentials"
 	ADD_VCENTERS          = "add-vcenters"
@@ -42,4 +44,5 @@ const (
 	SYNC_VCENTERS         = "sync"
 	SCAN_VIRTUAL_MACHINES = "scan-virtual-machines"
 	SCAN_COMPONENTS       = "scan-components"
+	INTROSPECT            = "introspect"
 )
