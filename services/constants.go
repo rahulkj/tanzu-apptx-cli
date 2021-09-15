@@ -45,4 +45,5 @@ const (
 	SCAN_VIRTUAL_MACHINES = "scan-virtual-machines"
 	SCAN_COMPONENTS       = "scan-components"
 	INTROSPECT            = "introspect"
+	DISCOVER_TOPOLOGY     = "discover-topology"
 )

@@ -66,6 +66,10 @@ type VCenterScanVMRequest struct {
 	Filters               Datacenter `json:"filters"`
 }
 
+type DiscoverTopologyRequest struct {
+	Filters Datacenter `json:"filters"`
+}
+
 func (vCenters VCenters) Execute() {
 	vCenters = vCenters.validate()
 
@@ -83,6 +87,8 @@ func (vCenters VCenters) Execute() {
 		vCenters.scanVirtualMachines(authResponse.Token, request)
 	case SCAN_COMPONENTS:
 		vCenters.scanComponents(authResponse.Token, request)
+	case DISCOVER_TOPOLOGY:
+		vCenters.discoverTopology(authResponse.Token, request)
 	default:
 		fmt.Println("Operation not supported \n")
 		vCenters.printUsage()
@@ -98,6 +104,7 @@ func (vCenters VCenters) printUsage() {
 	fmt.Printf("  %s \t\t\t\t%s \n", SYNC_VCENTERS, "Sync vCenter inventory")
 	fmt.Printf("  %s \t%s \n", SCAN_VIRTUAL_MACHINES, "Scan for virtual machines managed by a vCenter")
 	fmt.Printf("  %s \t\t%s \n", SCAN_COMPONENTS, "Scan for components running on the virtual machines managed by a vCenter")
+	fmt.Printf("  %s \t\t%s \n", DISCOVER_TOPOLOGY, "Discover topology for the components running on the virtual machines managed by a vCenter")
 	os.Exit(1)
 }
 
@@ -107,6 +114,7 @@ func (vCenters VCenters) validate() VCenters {
 	syncVCenterCmd := flag.NewFlagSet(SYNC_VCENTERS, flag.ExitOnError)
 	scanVirtualMachinesCmd := flag.NewFlagSet(SCAN_VIRTUAL_MACHINES, flag.ExitOnError)
 	scanComponentsCmd := flag.NewFlagSet(SCAN_COMPONENTS, flag.ExitOnError)
+	discoverTopologyCmd := flag.NewFlagSet(DISCOVER_TOPOLOGY, flag.ExitOnError)
 
 	if len(os.Args) < 3 {
 		vCenters.printUsage()
@@ -208,6 +216,23 @@ func (vCenters VCenters) validate() VCenters {
 			scanComponentsCmd.PrintDefaults()
 			os.Exit(1)
 		}
+	} else if operation == DISCOVER_TOPOLOGY {
+		discoverTopologyCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
+		discoverTopologyCmd.StringVar(&username, "username", "", "Iris admin username")
+		discoverTopologyCmd.StringVar(&password, "password", "", "Iris admin password")
+		discoverTopologyCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
+		discoverTopologyCmd.StringVar(&vcName, "vc-name", "", "vCenter Name")
+
+		discoverTopologyCmd.Parse(os.Args[3:])
+
+		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
+			(len(vcFqdn) == 0 && len(vcName) == 0) ||
+			(strings.Contains(url, "https://")) {
+			fmt.Println("Usage: 'iris-cli vCenter discover-topology [flags]' \n")
+			fmt.Println("Flags:")
+			discoverTopologyCmd.PrintDefaults()
+			os.Exit(1)
+		}
 	} else {
 		vCenters.printUsage()
 	}
@@ -273,7 +298,7 @@ func (vCenters VCenters) unregister(token string, request Request) {
 
 func (vCenters VCenters) findVCenter(token string, request Request) (response VCenter) {
 
-	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VCENTERS + "?page=0&size=10"
+	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VCENTERS + "?"
 
 	if len(vCenters.vcName) > 0 {
 		url = url + "&vcName=" + vCenters.vcName
@@ -409,5 +434,36 @@ func (vCenters VCenters) scanComponents(token string, request Request) {
 		}
 	} else {
 		log.Println("Failed to scan components running on the virtual machines managed by the provided vCenter. Response Code:", responseCode)
+	}
+}
+
+func (vCenters VCenters) discoverTopology(token string, request Request) {
+	vCenter := vCenters.findVCenter(token, request)
+
+	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VCENTERS + "/" + vCenter.VCenterUUID + "/correlation"
+
+	dataCenter := new(Datacenter)
+	discoverTopologyRequest := DiscoverTopologyRequest{*dataCenter}
+
+	body, responseCode := processRequest(token, url, "POST", discoverTopologyRequest)
+
+	if responseCode == 202 {
+		tasks := Tasks{}
+		err := json.Unmarshal(body, &tasks)
+		if err != nil {
+			log.Println("Failed to parse the response body.\n[ERROR] -", err)
+			os.Exit(1)
+		}
+
+		log.Println("Submitted the request and the taskID is:", tasks.TaskID)
+
+		status := tasks.MonitorTask(token, tasks.TaskID, request)
+		if status != "SUCCESS" {
+			log.Println("Failed to discover topology for the provided vCenter")
+		} else {
+			log.Println("Successfully discovered topology for the provided vCenter")
+		}
+	} else {
+		log.Println("Failed to discover topology for the provided vCenter. Response Code:", responseCode)
 	}
 }
