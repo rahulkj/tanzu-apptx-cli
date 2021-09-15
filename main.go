@@ -30,6 +30,9 @@ func main() {
 	case strings.ToLower(services.VIRTUAL_MACHINES):
 		vm := services.VirtualMachines{}
 		vm.Execute()
+	case strings.ToLower(services.APPLICATIONS):
+		vm := services.Applications{}
+		vm.Execute()
 	default:
 		printUsage()
 		os.Exit(1)
@@ -45,5 +48,6 @@ func printUsage() {
 	fmt.Printf("  %s \t\t\t%s \n", services.VCENTER_CMD, "vCenter operations")
 	fmt.Printf("  %s \t\t\t\t%s \n", services.VRNI_CMD, "vRNI operations")
 	fmt.Printf("  %s \t\t%s \n", services.VIRTUAL_MACHINES, "Virtual Machines operations")
+	fmt.Printf("  %s \t\t\t%s \n", services.APPLICATIONS, "Applications operations")
 	os.Exit(1)
 }
