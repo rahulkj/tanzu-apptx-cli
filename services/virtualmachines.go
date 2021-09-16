@@ -25,31 +25,6 @@ type VirtualMachines struct {
 	operation      string
 }
 
-type VirtualMachinesResponse struct {
-	ID           string   `json:"id"`
-	Name         string   `json:"name"`
-	Network      string   `json:"network"`
-	Hostname     string   `json:"hostname"`
-	Datastore    string   `json:"datastore"`
-	IP           string   `json:"ip"`
-	NumCPU       int      `json:"numCPU"`
-	MemoryMB     string   `json:"memoryMB"`
-	Services     []string `json:"services"`
-	VcenterFqdn  string   `json:"vcenterFqdn"`
-	DataCenter   string   `json:"dataCenter"`
-	Cluster      string   `json:"cluster"`
-	ResourcePool string   `json:"resourcePool'`
-	Folder       string   `json:"folder"`
-	NumOfDisks   int      `json:"numOfDisks"`
-	SizeOfDisks  string   `json:"sizeOfDisks"`
-}
-
-type VirtualMachinesListResponse struct {
-	Embedded struct {
-		VirtualMachinesResponse []VirtualMachinesResponse `json:"virtualmachines"`
-	} `json:"_embedded"`
-}
-
 func (virtualMachines VirtualMachines) Execute() {
 	virtualMachines = virtualMachines.validate()
 

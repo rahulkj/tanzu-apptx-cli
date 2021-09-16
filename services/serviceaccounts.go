@@ -19,28 +19,6 @@ type ServiceAccounts struct {
 	operation  string
 }
 
-type serviceAccountRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Alias    string `json:"alias"`
-}
-
-type serviceAccount struct {
-	UUID     string `json:"uuid"`
-	Alias    string `json:"alias"`
-	Username string `json:"username"`
-}
-
-type response struct {
-	Embedded struct {
-		ServiceAccounts []struct {
-			UUID     string `json:"uuid"`
-			Alias    string `json:"alias"`
-			Username string `json:"username"`
-		} `json:"serviceAccounts"`
-	} `json:"_embedded"`
-}
-
 func (serviceAccounts ServiceAccounts) Execute() {
 	serviceAccounts = serviceAccounts.validate()
 

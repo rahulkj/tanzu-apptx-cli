@@ -21,30 +21,6 @@ type VRNI struct {
 	operation    string
 }
 
-type VRNIRequest struct {
-	Fqdn               string   `json:"ip"`
-	ApiToken           string   `json:"apiToken"`
-	isSaaS             bool     `json:"isSaas"`
-	VCenterUUIDs       []string `json:"vcUuids"`
-	ServiceAccountUUID string   `json:"serviceAccountUUID"`
-}
-
-type VRNIResponse struct {
-	Id       string `json:"id"`
-	IP       string `json:"ip"`
-	IsSaaS   bool   `json:"isSaaS`
-	ApiToken string `json:"apiToken`
-	VCenters []struct {
-		Fqdn        string `json:"fqdn"`
-		VCenterUUID string `json:"irisVcenterUUID"`
-		VCName      string `json:"vcName"`
-	} `json:"vcenters"`
-	ServiceAccount struct {
-		UUID  string `json:"uuid"`
-		Alias string `json:"alias"`
-	} `json:"serviceAccount"`
-}
-
 func (vRNI VRNI) Execute() {
 	vRNI = vRNI.validate()
 

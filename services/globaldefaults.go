@@ -17,10 +17,6 @@ type GlobalDefaults struct {
 	operation string
 }
 
-type GlobalDefaultRequest struct {
-	ServiceAccountUUID string `json:"serviceAccountUUID"`
-}
-
 func (globalDefaults GlobalDefaults) Execute() {
 	globalDefaults = globalDefaults.validate()
 

@@ -19,57 +19,6 @@ type VCenters struct {
 	operation string
 }
 
-type VCenterRequest struct {
-	Fqdn                 string `json:"fqdn"`
-	VCName               string `json:"vcName"`
-	VCServiceAccountUUID string `json:"vcServiceAccountUUID"`
-}
-
-type VCenter struct {
-	Fqdn        string       `json:"fqdn"`
-	VCenterUUID string       `json:"irisVcenterUUID"`
-	VCName      string       `json:"vcName"`
-	Datacenters []Datacenter `json:"dataCenters"`
-}
-
-type Datacenter struct {
-	ModID    string `json:"modId"`
-	Name     string `json:"name"`
-	Type     string `json:"type"`
-	Clusters []struct {
-		ModID         string `json:"modId"`
-		Name          string `json:"name"`
-		Type          string `json:"type"`
-		ResourcePools []struct {
-			ModID string `json:"modId"`
-			Name  string `json:"name"`
-			Type  string `json:"type"`
-		} `json:"resourcePools"`
-	} `json:"clusters"`
-	Folders []struct {
-		ModID string `json:"modId"`
-		Name  string `json:"name"`
-		Type  string `json:"type"`
-	} `json:"folders"`
-}
-
-type VCenterListResponse struct {
-	Embedded struct {
-		VCenters []VCenter `json:"vcenters"`
-	} `json:"_embedded"`
-}
-
-type VCenterScanVMRequest struct {
-	ComponentScan         bool       `json:"componentScan"`
-	ApplyCredentialPolicy bool       `json:"applyCredentialPolicy"`
-	BinaryAnalysis        bool       `json:"binaryAnalysis"`
-	Filters               Datacenter `json:"filters"`
-}
-
-type DiscoverTopologyRequest struct {
-	Filters Datacenter `json:"filters"`
-}
-
 func (vCenters VCenters) Execute() {
 	vCenters = vCenters.validate()
 

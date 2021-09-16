@@ -1,5 +1,6 @@
 package services
 
+// API Functions
 const (
 	PROTOCOL = "https"
 	PREFIX   = "discovery"
@@ -15,12 +16,7 @@ const (
 	TASKS            = "tasks"
 )
 
-type Request struct {
-	URL      string
-	Username string
-	Password string
-}
-
+// CLI Name and CLI Command Names
 const (
 	CLI_NAME             = "tanzu-apptx-cli"
 	SERVICE_ACCOUNT_CMD  = "service-account"
@@ -33,6 +29,7 @@ const (
 	COMPONENTS_CMD       = "components"
 )
 
+// Operations supported by each command
 const (
 	ASSIGN                = "assign"
 	CREATE                = "create"

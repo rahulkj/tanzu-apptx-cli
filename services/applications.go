@@ -18,28 +18,6 @@ type Applications struct {
 	operation    string
 }
 
-type ApplicationsListResponse struct {
-	Embedded struct {
-		Applications []struct {
-			ID                     string `json:"id"`
-			Name                   string `json:"name"`
-			ComponentsGroupedByVMs []struct {
-				VMName     string `json:"vmName"`
-				Components []struct {
-					ID                string `json:"id"`
-					VMName            string `json:"vmName"`
-					VMUUID            string `json:"vmUUID"`
-					Type              string `json:"type"`
-					ProcessName       string `json:"processName`
-					IsContainerizable bool   `json:"isContainerizable"`
-					ServiceType       string `json:"serviceType"`
-					CompName          string `json:"compName"`
-				} `json:"components"`
-			} `json:"componentsGroupedByVMs"`
-		} `json:"applications"`
-	} `json:"_embedded"`
-}
-
 func (applications Applications) Execute() {
 	applications = applications.validate()
 

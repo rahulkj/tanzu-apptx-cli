@@ -18,23 +18,6 @@ type Components struct {
 	operation    string
 }
 
-type ComponentsListResponse struct {
-	Embedded struct {
-		Components []struct {
-			ID                string `json:"id"`
-			VMName            string `json:"vmName"`
-			VMUUID            string `json:"vmUUID"`
-			Type              string `json:"type"`
-			ProcessName       string `json:"processName`
-			IsContainerizable bool   `json:"isContainerizable"`
-			ServiceType       string `json:"serviceType"`
-			CompName          string `json:"compName"`
-			Owner             string `json:"owner"`
-			LastIntrospect    string `json:"lastIntrospect"`
-		} `json:"components"`
-	} `json:"_embedded"`
-}
-
 func (components Components) Execute() {
 	components = components.validate()
 

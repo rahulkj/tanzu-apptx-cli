@@ -8,15 +8,6 @@ import (
 	"os"
 )
 
-type AuthRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-type AuthResponse struct {
-	Token string `json:"token"`
-}
-
 func Authenticate(request Request) (authResponse AuthResponse) {
 
 	authRequest := AuthRequest{request.Username, request.Password}
