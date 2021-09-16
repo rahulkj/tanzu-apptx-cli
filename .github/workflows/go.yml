@@ -28,9 +28,9 @@ jobs:
 
         go version
         mkdir out
-        GOOS=darwin GOARCH=amd64 go build -ldflags "${LD_FLAGS_VERSION}" -o out/iris-amd64-darwin
-        GOOS=linux GOARCH=amd64 go build -ldflags "${LD_FLAGS_VERSION}" -o out/iris-amd64-linux
-        GOOS=windows GOARCH=amd64 go build -ldflags "${LD_FLAGS_VERSION}" -o out/iris-amd64-windows.exe
+        GOOS=darwin GOARCH=amd64 go build -ldflags "${LD_FLAGS_VERSION}" -o out/tanzu-apptx-cli-darwin_x64
+        GOOS=linux GOARCH=amd64 go build -ldflags "${LD_FLAGS_VERSION}" -o out/tanzu-apptx-cli-linux_x64
+        GOOS=windows GOARCH=amd64 go build -ldflags "${LD_FLAGS_VERSION}" -o out/tanzu-apptx-cli-windows_x64.exe
         
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v2
