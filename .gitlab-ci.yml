@@ -1,0 +1,35 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Go.gitlab-ci.yml
+
+image: golang:latest
+
+variables:
+  # Please edit to your GitLab project
+  REPO_NAME: gitlab.eng.vmware.com/vmware-navigator-practice/tooling/iris-cli
+
+# The problem is that to be able to use go get, one needs to put
+# the repository in the $GOPATH. So for example if your gitlab domain
+# is gitlab.com, and that your repository is namespace/project, and
+# the default GOPATH being /go, then you'd need to have your
+# repository in /go/src/gitlab.com/namespace/project
+# Thus, making a symbolic link corrects this.
+before_script:
+  - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
+  - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
+  - cd $GOPATH/src/$REPO_NAME
+  - mkdir $CI_PROJECT_DIR/artifacts
+
+stages:
+  - build
+
+compile:
+  stage: build
+  script:
+    - GOOS=darwin GOARCH=amd64 go build -o $CI_PROJECT_DIR/artifacts/iris-amd64-darwin
+    - GOOS=linux GOARCH=amd64 go build -o $CI_PROJECT_DIR/artifacts/iris-amd64-linux
+    - GOOS=windows GOARCH=amd64 go build -o $CI_PROJECT_DIR/artifacts/iris-amd64-windows.exe
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/artifacts/
