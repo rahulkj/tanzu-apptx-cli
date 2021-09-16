@@ -108,7 +108,7 @@ func (vRNI VRNI) validate() VRNI {
 			(strings.Contains(url, "https://")) ||
 			(isSaaS && len(vrniAPIToken) == 0 && len(saAlias) != 0) ||
 			(!isSaaS && len(saAlias) == 0 && len(vrniAPIToken) != 0) {
-			fmt.Println("Usage: 'iris-cli vRNI register [flags]' \n")
+			fmt.Println("Usage: 'iris-cli vrni register [flags]' \n")
 			fmt.Println("Flags:")
 			registerCmd.PrintDefaults()
 			os.Exit(1)
@@ -124,7 +124,7 @@ func (vRNI VRNI) validate() VRNI {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vrniFqdn) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vRNI unregister [flags]' \n")
+			fmt.Println("Usage: 'iris-cli vrni unregister [flags]' \n")
 			fmt.Println("Flags:")
 			unregisterCmd.PrintDefaults()
 			os.Exit(1)
@@ -143,7 +143,7 @@ func (vRNI VRNI) validate() VRNI {
 			(len(vrniFqdn) == 0) ||
 			(strings.Contains(url, "https://")) ||
 			(len(vrniAPIToken) == 0 || len(saAlias) != 0) {
-			fmt.Println("Usage: 'iris-cli vRNI update-credentials [flags]' \n")
+			fmt.Println("Usage: 'iris-cli vrni update-credentials [flags]' \n")
 			fmt.Println("Flags:")
 			updateCredentialsCmd.PrintDefaults()
 			os.Exit(1)
@@ -160,7 +160,7 @@ func (vRNI VRNI) validate() VRNI {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vrniFqdn) == 0 || len(vcNames) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vRNI add-vcenters [flags]' \n")
+			fmt.Println("Usage: 'iris-cli vrni add-vcenters [flags]' \n")
 			fmt.Println("Flags:")
 			addVcentersCmd.PrintDefaults()
 			os.Exit(1)
@@ -177,7 +177,7 @@ func (vRNI VRNI) validate() VRNI {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vrniFqdn) == 0 || len(vcNames) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vRNI remove-vcenters [flags]' \n")
+			fmt.Println("Usage: 'iris-cli vrni remove-vcenters [flags]' \n")
 			fmt.Println("Flags:")
 			removeVcentersCmd.PrintDefaults()
 			os.Exit(1)

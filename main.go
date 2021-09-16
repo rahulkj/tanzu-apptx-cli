@@ -27,11 +27,14 @@ func main() {
 	case strings.ToLower(services.VRNI_CMD):
 		vr := services.VRNI{}
 		vr.Execute()
-	case strings.ToLower(services.VIRTUAL_MACHINES):
+	case strings.ToLower(services.VIRTUAL_MACHINES_CMD):
 		vm := services.VirtualMachines{}
 		vm.Execute()
-	case strings.ToLower(services.APPLICATIONS):
+	case strings.ToLower(services.APPLICATIONS_CMD):
 		vm := services.Applications{}
+		vm.Execute()
+	case strings.ToLower(services.COMPONENTS_CMD):
+		vm := services.Components{}
 		vm.Execute()
 	default:
 		printUsage()
@@ -47,7 +50,8 @@ func printUsage() {
 	fmt.Printf("  %s \t\t%s \n", services.GLOBAL_DEFAULT_CMD, "Global Defaults operations")
 	fmt.Printf("  %s \t\t\t%s \n", services.VCENTER_CMD, "vCenter operations")
 	fmt.Printf("  %s \t\t\t\t%s \n", services.VRNI_CMD, "vRNI operations")
-	fmt.Printf("  %s \t\t%s \n", services.VIRTUAL_MACHINES, "Virtual Machines operations")
-	fmt.Printf("  %s \t\t\t%s \n", services.APPLICATIONS, "Applications operations")
+	fmt.Printf("  %s \t\t%s \n", services.VIRTUAL_MACHINES_CMD, "Virtual Machines operations")
+	fmt.Printf("  %s \t\t\t%s \n", services.COMPONENTS_CMD, "Components operations")
+	fmt.Printf("  %s \t\t\t%s \n", services.APPLICATIONS_CMD, "Applications operations")
 	os.Exit(1)
 }

@@ -89,7 +89,7 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(saUsername) == 0 || len(saPassword) == 0 || len(saAlias) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli serviceAccount register [flags]' \n")
+			fmt.Println("Usage: 'iris-cli service-account register [flags]' \n")
 			fmt.Println("Flags:")
 			registerCmd.PrintDefaults()
 			os.Exit(1)
@@ -105,7 +105,7 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(saAlias) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli serviceAccount unregister [flags]' \n")
+			fmt.Println("Usage: 'iris-cli service-account unregister [flags]' \n")
 			fmt.Println("Flags:")
 			unregisterCmd.PrintDefaults()
 			os.Exit(1)
@@ -119,7 +119,7 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 }
 
 func (serviceAccounts ServiceAccounts) printUsage() {
-	fmt.Println("Usage: 'iris-cli serviceAccount [command]' \n")
+	fmt.Println("Usage: 'iris-cli service-account [command]' \n")
 	fmt.Println("Available Commands:")
 	fmt.Printf("  %s \t\t\t%s \n", REGISTER, "Register service account")
 	fmt.Printf("  %s \t\t\t%s \n", UNREGISTER, "Unregister service account")

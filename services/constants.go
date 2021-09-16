@@ -22,11 +22,14 @@ type Request struct {
 }
 
 const (
-	SERVICE_ACCOUNT_CMD = "serviceAccount"
-	GLOBAL_DEFAULT_CMD  = "globalDefault"
-	VCENTER_CMD         = "vCenter"
-	VRNI_CMD            = "vRNI"
-	QUESTIONS_CMD       = "questions"
+	SERVICE_ACCOUNT_CMD  = "service-account"
+	GLOBAL_DEFAULT_CMD   = "global-default"
+	VCENTER_CMD          = "vcenter"
+	VRNI_CMD             = "vrni"
+	QUESTIONS_CMD        = "questions"
+	VIRTUAL_MACHINES_CMD = "virtual-machines"
+	APPLICATIONS_CMD     = "applications"
+	COMPONENTS_CMD       = "components"
 )
 
 const (

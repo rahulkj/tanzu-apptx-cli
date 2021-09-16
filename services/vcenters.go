@@ -97,7 +97,7 @@ func (vCenters VCenters) Execute() {
 }
 
 func (vCenters VCenters) printUsage() {
-	fmt.Println("Usage: 'iris-cli vCenter [command]' \n")
+	fmt.Println("Usage: 'iris-cli vcenter [command]' \n")
 	fmt.Println("Available Commands:")
 	fmt.Printf("  %s \t\t\t%s \n", REGISTER, "Register vCenter instance")
 	fmt.Printf("  %s \t\t\t%s \n", UNREGISTER, "Remove vCenter instance")
@@ -142,7 +142,7 @@ func (vCenters VCenters) validate() VCenters {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vcFqdn) == 0 || len(vcName) == 0 || len(saAlias) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vCenter register [flags]' \n")
+			fmt.Println("Usage: 'iris-cli vcenter register [flags]' \n")
 			fmt.Println("Flags:")
 			registerCmd.PrintDefaults()
 			os.Exit(1)
@@ -160,7 +160,7 @@ func (vCenters VCenters) validate() VCenters {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vcFqdn) == 0 && len(vcName) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vCenter unregister [flags]' \n")
+			fmt.Println("Usage: 'iris-cli vcenter unregister [flags]' \n")
 			fmt.Println("Flags:")
 			unregisterCmd.PrintDefaults()
 			os.Exit(1)
@@ -177,7 +177,7 @@ func (vCenters VCenters) validate() VCenters {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vcFqdn) == 0 && len(vcName) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vCenter sync [flags]' \n")
+			fmt.Println("Usage: 'iris-cli vcenter sync [flags]' \n")
 			fmt.Println("Flags:")
 			syncVCenterCmd.PrintDefaults()
 			os.Exit(1)
@@ -194,7 +194,7 @@ func (vCenters VCenters) validate() VCenters {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vcFqdn) == 0 && len(vcName) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vCenter scan-virtual-machines [flags]' \n")
+			fmt.Println("Usage: 'iris-cli vcenter scan-virtual-machines [flags]' \n")
 			fmt.Println("Flags:")
 			scanVirtualMachinesCmd.PrintDefaults()
 			os.Exit(1)
@@ -211,7 +211,7 @@ func (vCenters VCenters) validate() VCenters {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vcFqdn) == 0 && len(vcName) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vCenter scan-components [flags]' \n")
+			fmt.Println("Usage: 'iris-cli vcenter scan-components [flags]' \n")
 			fmt.Println("Flags:")
 			scanComponentsCmd.PrintDefaults()
 			os.Exit(1)
@@ -228,7 +228,7 @@ func (vCenters VCenters) validate() VCenters {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vcFqdn) == 0 && len(vcName) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vCenter discover-topology [flags]' \n")
+			fmt.Println("Usage: 'iris-cli vcenter discover-topology [flags]' \n")
 			fmt.Println("Flags:")
 			discoverTopologyCmd.PrintDefaults()
 			os.Exit(1)

@@ -136,7 +136,7 @@ func (virtualMachines VirtualMachines) validate() VirtualMachines {
 
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli virtualmachines list [flags]' \n")
+			fmt.Println("Usage: 'iris-cli virtual-machines list [flags]' \n")
 			fmt.Println("Flags:")
 			listCmd.PrintDefaults()
 			os.Exit(1)
@@ -152,7 +152,7 @@ func (virtualMachines VirtualMachines) validate() VirtualMachines {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			len(vmName) == 0 ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli virtualmachines get [flags]' \n")
+			fmt.Println("Usage: 'iris-cli virtual-machines get [flags]' \n")
 			fmt.Println("Flags:")
 			introspectCmd.PrintDefaults()
 			os.Exit(1)
@@ -166,7 +166,7 @@ func (virtualMachines VirtualMachines) validate() VirtualMachines {
 }
 
 func (virtualMachines VirtualMachines) printUsage() {
-	fmt.Println("Usage: 'iris-cli virtualmachines [command]' \n")
+	fmt.Println("Usage: 'iris-cli virtual-machines [command]' \n")
 	fmt.Println("Available Commands:")
 	fmt.Printf("  %s \t\t\t%s \n", LIST, "List all virtual machines")
 	fmt.Printf("  %s \t\t%s \n", INTROSPECT, "Introspect a virtual machine")
