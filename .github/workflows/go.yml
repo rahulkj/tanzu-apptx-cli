@@ -22,9 +22,9 @@ jobs:
       run: |
         go version
         mkdir out
-        env CGO_ENABLED=1 CC=o64-clang GOOS=darwin GOARCH=amd64 go build -o out/csa-darwin
-        env CGO_ENABLED=1 CC=musl-gcc go build -o out/csa-linux
-        env CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 go build -o out/csa-windows.exe
+        GOOS=darwin GOARCH=amd64 go build -o out/iris-amd64-darwin
+        GOOS=linux GOARCH=amd64 go build -o out/iris-amd64-linux
+        GOOS=windows GOARCH=amd64 go build -o out/iris-amd64-windows.exe
         
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v2
