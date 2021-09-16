@@ -22,7 +22,7 @@ jobs:
       run: |
         go version
         mkdir out
-        go build -v ./... -o out/iris_linux64
+        go build -o out/iris_linux64
         
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v2
