@@ -5,10 +5,14 @@ import (
 	"os"
 	"strings"
 
-	"gitlab.eng.vmware.com/vmware-navigator-practice/tooling/iris-cli/services"
+	"gitlab.eng.vmware.com/vmware-navigator-practice/tooling/tanzu-apptx-cli/services"
 )
 
+var Version = "development"
+
 func main() {
+
+	fmt.Printf("%s version: %s \n", services.CLI_NAME, Version)
 
 	if len(os.Args) < 2 {
 		printUsage()
@@ -43,7 +47,7 @@ func main() {
 }
 
 func printUsage() {
-	fmt.Println("Usage: 'iris-cli [command]' \n")
+	fmt.Println("Usage: 'tanzu-apptx-cli [command]' \n")
 
 	fmt.Println("Available Commands:")
 	fmt.Printf("  %s \t\t%s \n", services.SERVICE_ACCOUNT_CMD, "Service Accounts operations")

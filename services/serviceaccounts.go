@@ -77,9 +77,9 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 	var saAlias string
 
 	if operation == REGISTER {
-		registerCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		registerCmd.StringVar(&username, "username", "", "Iris admin username")
-		registerCmd.StringVar(&password, "password", "", "Iris admin password")
+		registerCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		registerCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		registerCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		registerCmd.StringVar(&saUsername, "service-username", "", "service account username")
 		registerCmd.StringVar(&saPassword, "service-password", "", "service account password")
 		registerCmd.StringVar(&saAlias, "sa-alias", "", "service account alias")
@@ -89,15 +89,15 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(saUsername) == 0 || len(saPassword) == 0 || len(saAlias) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli service-account register [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, SERVICE_ACCOUNT_CMD, REGISTER)
+			fmt.Println("Available Flags:")
 			registerCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == UNREGISTER {
-		unregisterCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		unregisterCmd.StringVar(&username, "username", "", "Iris admin username")
-		unregisterCmd.StringVar(&password, "password", "", "Iris admin password")
+		unregisterCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		unregisterCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		unregisterCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		unregisterCmd.StringVar(&saAlias, "sa-alias", "", "service account alias")
 
 		unregisterCmd.Parse(os.Args[3:])
@@ -105,8 +105,8 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(saAlias) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli service-account unregister [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, SERVICE_ACCOUNT_CMD, UNREGISTER)
+			fmt.Println("Available Flags:")
 			unregisterCmd.PrintDefaults()
 			os.Exit(1)
 		}
@@ -119,7 +119,7 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 }
 
 func (serviceAccounts ServiceAccounts) printUsage() {
-	fmt.Println("Usage: 'iris-cli service-account [command]' \n")
+	fmt.Printf("Usage: '%s %s [command]' \n", CLI_NAME, SERVICE_ACCOUNT_CMD)
 	fmt.Println("Available Commands:")
 	fmt.Printf("  %s \t\t\t%s \n", REGISTER, "Register service account")
 	fmt.Printf("  %s \t\t\t%s \n", UNREGISTER, "Unregister service account")

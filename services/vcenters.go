@@ -97,7 +97,7 @@ func (vCenters VCenters) Execute() {
 }
 
 func (vCenters VCenters) printUsage() {
-	fmt.Println("Usage: 'iris-cli vcenter [command]' \n")
+	fmt.Printf("Usage: '%s %s [command]' \n", CLI_NAME, VCENTER_CMD)
 	fmt.Println("Available Commands:")
 	fmt.Printf("  %s \t\t\t%s \n", REGISTER, "Register vCenter instance")
 	fmt.Printf("  %s \t\t\t%s \n", UNREGISTER, "Remove vCenter instance")
@@ -130,9 +130,9 @@ func (vCenters VCenters) validate() VCenters {
 	var saAlias string
 
 	if operation == REGISTER {
-		registerCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		registerCmd.StringVar(&username, "username", "", "Iris admin username")
-		registerCmd.StringVar(&password, "password", "", "Iris admin password")
+		registerCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		registerCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		registerCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		registerCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
 		registerCmd.StringVar(&vcName, "vc-name", "", "vCenter Name")
 		registerCmd.StringVar(&saAlias, "sa-alias", "", "service account alias")
@@ -142,15 +142,15 @@ func (vCenters VCenters) validate() VCenters {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vcFqdn) == 0 || len(vcName) == 0 || len(saAlias) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vcenter register [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, VCENTER_CMD, REGISTER)
+			fmt.Println("Available Flags:")
 			registerCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == UNREGISTER {
-		unregisterCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		unregisterCmd.StringVar(&username, "username", "", "Iris admin username")
-		unregisterCmd.StringVar(&password, "password", "", "Iris admin password")
+		unregisterCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		unregisterCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		unregisterCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		unregisterCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
 		unregisterCmd.StringVar(&vcName, "vc-name", "", "vCenter Name")
 		// saAlias = new(string)
@@ -160,15 +160,15 @@ func (vCenters VCenters) validate() VCenters {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vcFqdn) == 0 && len(vcName) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vcenter unregister [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, VCENTER_CMD, UNREGISTER)
+			fmt.Println("Available Flags:")
 			unregisterCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == SYNC_VCENTERS {
-		syncVCenterCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		syncVCenterCmd.StringVar(&username, "username", "", "Iris admin username")
-		syncVCenterCmd.StringVar(&password, "password", "", "Iris admin password")
+		syncVCenterCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		syncVCenterCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		syncVCenterCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		syncVCenterCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
 		syncVCenterCmd.StringVar(&vcName, "vc-name", "", "vCenter Name")
 
@@ -177,15 +177,15 @@ func (vCenters VCenters) validate() VCenters {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vcFqdn) == 0 && len(vcName) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vcenter sync [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, VCENTER_CMD, SYNC_VCENTERS)
+			fmt.Println("Available Flags:")
 			syncVCenterCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == SCAN_VIRTUAL_MACHINES {
-		scanVirtualMachinesCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		scanVirtualMachinesCmd.StringVar(&username, "username", "", "Iris admin username")
-		scanVirtualMachinesCmd.StringVar(&password, "password", "", "Iris admin password")
+		scanVirtualMachinesCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		scanVirtualMachinesCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		scanVirtualMachinesCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		scanVirtualMachinesCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
 		scanVirtualMachinesCmd.StringVar(&vcName, "vc-name", "", "vCenter Name")
 
@@ -194,15 +194,15 @@ func (vCenters VCenters) validate() VCenters {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vcFqdn) == 0 && len(vcName) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vcenter scan-virtual-machines [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, VCENTER_CMD, SCAN_VIRTUAL_MACHINES)
+			fmt.Println("Available Flags:")
 			scanVirtualMachinesCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == SCAN_COMPONENTS {
-		scanComponentsCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		scanComponentsCmd.StringVar(&username, "username", "", "Iris admin username")
-		scanComponentsCmd.StringVar(&password, "password", "", "Iris admin password")
+		scanComponentsCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		scanComponentsCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		scanComponentsCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		scanComponentsCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
 		scanComponentsCmd.StringVar(&vcName, "vc-name", "", "vCenter Name")
 
@@ -211,15 +211,15 @@ func (vCenters VCenters) validate() VCenters {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vcFqdn) == 0 && len(vcName) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vcenter scan-components [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, VCENTER_CMD, SCAN_COMPONENTS)
+			fmt.Println("Available Flags:")
 			scanComponentsCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == DISCOVER_TOPOLOGY {
-		discoverTopologyCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		discoverTopologyCmd.StringVar(&username, "username", "", "Iris admin username")
-		discoverTopologyCmd.StringVar(&password, "password", "", "Iris admin password")
+		discoverTopologyCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		discoverTopologyCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		discoverTopologyCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		discoverTopologyCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
 		discoverTopologyCmd.StringVar(&vcName, "vc-name", "", "vCenter Name")
 
@@ -228,8 +228,8 @@ func (vCenters VCenters) validate() VCenters {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vcFqdn) == 0 && len(vcName) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vcenter discover-topology [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, VCENTER_CMD, DISCOVER_TOPOLOGY)
+			fmt.Println("Available Flags:")
 			discoverTopologyCmd.PrintDefaults()
 			os.Exit(1)
 		}

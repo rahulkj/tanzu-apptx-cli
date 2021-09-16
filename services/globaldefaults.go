@@ -56,9 +56,9 @@ func (globalDefaults GlobalDefaults) validate() GlobalDefaults {
 	var saType string
 
 	if operation == ASSIGN {
-		assignCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		assignCmd.StringVar(&username, "username", "", "Iris admin username")
-		assignCmd.StringVar(&password, "password", "", "Iris admin password")
+		assignCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		assignCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		assignCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		assignCmd.StringVar(&saType, "service-account-type", "", "service account type, ex: VCs, VRNIs, LINUX_VMs")
 		assignCmd.StringVar(&saAlias, "sa-alias", "", "service account alias")
 
@@ -67,15 +67,15 @@ func (globalDefaults GlobalDefaults) validate() GlobalDefaults {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(saType) == 0 || len(saAlias) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli global-default assign [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, GLOBAL_DEFAULT_CMD, ASSIGN)
+			fmt.Println("Available Flags:")
 			assignCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == RESET {
-		resetCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		resetCmd.StringVar(&username, "username", "", "Iris admin username")
-		resetCmd.StringVar(&password, "password", "", "Iris admin password")
+		resetCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		resetCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		resetCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		resetCmd.StringVar(&saType, "service-account-type", "", "service account type, ex: VCs, VRNIs, LINUX_VMs")
 
 		resetCmd.Parse(os.Args[3:])
@@ -83,8 +83,8 @@ func (globalDefaults GlobalDefaults) validate() GlobalDefaults {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(saType) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli global-default reset [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, GLOBAL_DEFAULT_CMD, RESET)
+			fmt.Println("Available Flags:")
 			resetCmd.PrintDefaults()
 			os.Exit(1)
 		}
@@ -97,7 +97,7 @@ func (globalDefaults GlobalDefaults) validate() GlobalDefaults {
 }
 
 func (globalDefaults GlobalDefaults) printUsage() {
-	fmt.Println("Usage: 'iris-cli global-default [command]' \n")
+	fmt.Printf("Usage: '%s %s [command]' \n", CLI_NAME, GLOBAL_DEFAULT_CMD)
 	fmt.Println("Available Commands:")
 	fmt.Printf("  %s \t\t\t%s \n", ASSIGN, "Set service account as a global default")
 	fmt.Printf("  %s \t\t\t%s \n", RESET, "Reset the global default")

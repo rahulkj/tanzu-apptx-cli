@@ -7,7 +7,7 @@ image: golang:latest
 
 variables:
   # Please edit to your GitLab project
-  REPO_NAME: gitlab.eng.vmware.com/vmware-navigator-practice/tooling/iris-cli
+  REPO_NAME: gitlab.eng.vmware.com/vmware-navigator-practice/tooling/tanzu-apptx-cli
 
 # The problem is that to be able to use go get, one needs to put
 # the repository in the $GOPATH. So for example if your gitlab domain

@@ -22,6 +22,7 @@ type Request struct {
 }
 
 const (
+	CLI_NAME             = "tanzu-apptx-cli"
 	SERVICE_ACCOUNT_CMD  = "service-account"
 	GLOBAL_DEFAULT_CMD   = "global-default"
 	VCENTER_CMD          = "vcenter"

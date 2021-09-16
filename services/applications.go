@@ -103,17 +103,17 @@ func (applications Applications) validate() Applications {
 	var format string
 
 	if operation == LIST {
-		listCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		listCmd.StringVar(&username, "username", "", "Iris admin username")
-		listCmd.StringVar(&password, "password", "", "Iris admin password")
-		listCmd.StringVar(&format, "output-format", "table", "Output format - (json,csv,table) (Default: table)")
+		listCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		listCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		listCmd.StringVar(&password, "password", "", "Application Transformer admin password")
+		listCmd.StringVar(&format, "output-format", "table", "Output format - json,csv,table")
 
 		listCmd.Parse(os.Args[3:])
 
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli virtualmachines list [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, APPLICATIONS_CMD, LIST)
+			fmt.Println("Available Flags:")
 			listCmd.PrintDefaults()
 			os.Exit(1)
 		}
@@ -126,7 +126,7 @@ func (applications Applications) validate() Applications {
 }
 
 func (applications Applications) printUsage() {
-	fmt.Println("Usage: 'iris-cli applications [command]' \n")
+	fmt.Printf("Usage: '%s %s [command]' \n", CLI_NAME, APPLICATIONS_CMD)
 	fmt.Println("Available Commands:")
 	fmt.Printf("  %s \t\t\t%s \n", LIST, "List all applications")
 	os.Exit(1)

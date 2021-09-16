@@ -92,9 +92,9 @@ func (vRNI VRNI) validate() VRNI {
 	var vrniAPIToken string
 
 	if operation == REGISTER {
-		registerCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		registerCmd.StringVar(&username, "username", "", "Iris admin username")
-		registerCmd.StringVar(&password, "password", "", "Iris admin password")
+		registerCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		registerCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		registerCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		registerCmd.StringVar(&vrniFqdn, "vrni-fqdn", "", "vCenter FQDN")
 		registerCmd.StringVar(&vcNames, "vc-names", "", "comma separated list of vCenter Name(s)")
 		registerCmd.StringVar(&saAlias, "sa-alias", "", "vRNI service account alias")
@@ -108,15 +108,15 @@ func (vRNI VRNI) validate() VRNI {
 			(strings.Contains(url, "https://")) ||
 			(isSaaS && len(vrniAPIToken) == 0 && len(saAlias) != 0) ||
 			(!isSaaS && len(saAlias) == 0 && len(vrniAPIToken) != 0) {
-			fmt.Println("Usage: 'iris-cli vrni register [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, VRNI_CMD, REGISTER)
+			fmt.Println("Available Flags:")
 			registerCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == UNREGISTER {
-		unregisterCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		unregisterCmd.StringVar(&username, "username", "", "Iris admin username")
-		unregisterCmd.StringVar(&password, "password", "", "Iris admin password")
+		unregisterCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		unregisterCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		unregisterCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		unregisterCmd.StringVar(&vrniFqdn, "vrni-fqdn", "", "vCenter FQDN")
 
 		unregisterCmd.Parse(os.Args[3:])
@@ -124,15 +124,15 @@ func (vRNI VRNI) validate() VRNI {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vrniFqdn) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vrni unregister [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, VRNI_CMD, UNREGISTER)
+			fmt.Println("Available Flags:")
 			unregisterCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == UPDATE_CREDENTIALS {
-		updateCredentialsCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		updateCredentialsCmd.StringVar(&username, "username", "", "Iris admin username")
-		updateCredentialsCmd.StringVar(&password, "password", "", "Iris admin password")
+		updateCredentialsCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		updateCredentialsCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		updateCredentialsCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		updateCredentialsCmd.StringVar(&vrniFqdn, "vrni-fqdn", "", "vCenter FQDN")
 		updateCredentialsCmd.StringVar(&saAlias, "sa-alias", "", "vRNI service account alias")
 		updateCredentialsCmd.StringVar(&vrniAPIToken, "vrni-api-token", "", "SaaS vRNI api token")
@@ -143,15 +143,15 @@ func (vRNI VRNI) validate() VRNI {
 			(len(vrniFqdn) == 0) ||
 			(strings.Contains(url, "https://")) ||
 			(len(vrniAPIToken) == 0 || len(saAlias) != 0) {
-			fmt.Println("Usage: 'iris-cli vrni update-credentials [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, VRNI_CMD, UPDATE_CREDENTIALS)
+			fmt.Println("Available Flags:")
 			updateCredentialsCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == ADD_VCENTERS {
-		addVcentersCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		addVcentersCmd.StringVar(&username, "username", "", "Iris admin username")
-		addVcentersCmd.StringVar(&password, "password", "", "Iris admin password")
+		addVcentersCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		addVcentersCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		addVcentersCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		addVcentersCmd.StringVar(&vrniFqdn, "vrni-fqdn", "", "vCenter FQDN")
 		addVcentersCmd.StringVar(&vcNames, "vc-names", "", "comma separated list of vCenter Name(s)")
 
@@ -160,15 +160,15 @@ func (vRNI VRNI) validate() VRNI {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vrniFqdn) == 0 || len(vcNames) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vrni add-vcenters [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, VRNI_CMD, ADD_VCENTERS)
+			fmt.Println("Available Flags:")
 			addVcentersCmd.PrintDefaults()
 			os.Exit(1)
 		}
 	} else if operation == REMOVE_VCENTERS {
-		removeVcentersCmd.StringVar(&url, "url", "", "Iris URL, ex: appliance.example.com")
-		removeVcentersCmd.StringVar(&username, "username", "", "Iris admin username")
-		removeVcentersCmd.StringVar(&password, "password", "", "Iris admin password")
+		removeVcentersCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		removeVcentersCmd.StringVar(&username, "username", "", "Application Transformer admin username")
+		removeVcentersCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		removeVcentersCmd.StringVar(&vrniFqdn, "vrni-fqdn", "", "vCenter FQDN")
 		removeVcentersCmd.StringVar(&vcNames, "vc-names", "", "comma separated list of vCenter Name(s)")
 
@@ -177,8 +177,8 @@ func (vRNI VRNI) validate() VRNI {
 		if (len(url) == 0 || len(username) == 0 || len(password) == 0) ||
 			(len(vrniFqdn) == 0 || len(vcNames) == 0) ||
 			(strings.Contains(url, "https://")) {
-			fmt.Println("Usage: 'iris-cli vrni remove-vcenters [flags]' \n")
-			fmt.Println("Flags:")
+			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, VRNI_CMD, REMOVE_VCENTERS)
+			fmt.Println("Available Flags:")
 			removeVcentersCmd.PrintDefaults()
 			os.Exit(1)
 		}
@@ -191,7 +191,7 @@ func (vRNI VRNI) validate() VRNI {
 }
 
 func (vRNI VRNI) printUsage() {
-	fmt.Println("Usage: 'iris-cli vRNI [command]' \n")
+	fmt.Printf("Usage: '%s %s [Command]' \n", CLI_NAME, VRNI_CMD)
 	fmt.Println("Available Commands:")
 	fmt.Printf("  %s \t\t\t%s \n", REGISTER, "Register vRNI instance")
 	fmt.Printf("  %s \t\t\t%s \n", UNREGISTER, "Remove vRNI instance")
