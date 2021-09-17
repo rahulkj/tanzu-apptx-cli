@@ -26,16 +26,20 @@ jobs:
         LD_FLAGS_VERSION="-X \"main.Version=${TAG_VERSION:-'v1.0.0-dev'}\""
 
         go version
-        mkdir out
-        GOOS=darwin GOARCH=amd64 go build -ldflags "${LD_FLAGS_VERSION}" -o out/tanzu-apptx-cli-darwin_x64
-        GOOS=linux GOARCH=amd64 go build -ldflags "${LD_FLAGS_VERSION}" -o out/tanzu-apptx-cli-linux_x64
-        GOOS=windows GOARCH=amd64 go build -ldflags "${LD_FLAGS_VERSION}" -o out/tanzu-apptx-cli-windows_x64.exe
+        mkdir output
+        GOOS=darwin GOARCH=amd64 go build -ldflags "${LD_FLAGS_VERSION}" -o output/tanzu-apptx-cli-darwin_x64
+        GOOS=linux GOARCH=amd64 go build -ldflags "${LD_FLAGS_VERSION}" -o output/tanzu-apptx-cli-linux_x64
+        GOOS=windows GOARCH=amd64 go build -ldflags "${LD_FLAGS_VERSION}" -o output/tanzu-apptx-cli-windows_x64.exe
+
+        tar -czvf tanzu-apptx-clis.tar.gz output
+
+
         
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v2
       with:
         name: artifacts
-        path: out
+        path: output
         retention-days: 5
 
     - name: Create Release
@@ -56,6 +60,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./artifacts.zip
-        asset_name: artifacts.zip
+        asset_path: ./tanzu-apptx-clis.tar.gz
+        asset_name: tanzu-apptx-clis.tar.gz
         asset_content_type: application/zip
