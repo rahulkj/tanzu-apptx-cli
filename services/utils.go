@@ -2,12 +2,18 @@ package services
 
 import (
 	"bytes"
+	"crypto/md5"
+	"crypto/sha1"
+	"crypto/sha256"
+	"crypto/sha512"
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func getHTTPSClient() *http.Client {
@@ -54,4 +60,43 @@ func processRequest(token string, url string, method string, payload interface{}
 	}
 
 	return body, resp.StatusCode
+}
+
+func getCertificateThumbprint(endpoint string, port int, checksum string) (thumprint string) {
+
+	conn, err := tls.Dial("tcp", fmt.Sprintf("%s:%d", endpoint, port), &tls.Config{InsecureSkipVerify: true})
+	if err != nil {
+		panic("failed to connect: " + err.Error())
+	}
+
+	var fingerprint string
+
+	cert := conn.ConnectionState().PeerCertificates[0]
+
+	if checksum == "md5" {
+		fingerprint = insertNth(strings.ToUpper(fmt.Sprintf("%x", md5.Sum(cert.Raw))), 2)
+	} else if checksum == "sha1" {
+		fingerprint = insertNth(strings.ToUpper(fmt.Sprintf("%x", sha1.Sum(cert.Raw))), 2)
+	} else if checksum == "sha256" {
+		fingerprint = insertNth(strings.ToUpper(fmt.Sprintf("%x", sha256.Sum256(cert.Raw))), 2)
+	} else if checksum == "sha512" {
+		fingerprint = insertNth(strings.ToUpper(fmt.Sprintf("%x", sha512.Sum512(cert.Raw))), 2)
+	}
+
+	conn.Close()
+
+	return fingerprint
+}
+
+func insertNth(s string, n int) string {
+	var buffer bytes.Buffer
+	var n1 = n - 1
+	var l1 = len(s) - 1
+	for i, runei := range s {
+		buffer.WriteRune(runei)
+		if i%n == n1 && i != l1 {
+			buffer.WriteRune(':')
+		}
+	}
+	return buffer.String()
 }

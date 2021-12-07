@@ -2,8 +2,9 @@ package services
 
 // API Functions
 const (
-	PROTOCOL = "https"
-	PREFIX   = "discovery"
+	PROTOCOL   = "https"
+	HTTPS_PORT = 443
+	PREFIX     = "discovery"
 
 	APPLICATIONS     = "applications"
 	COMPONENTS       = "components"

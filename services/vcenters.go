@@ -198,9 +198,12 @@ func (vCenters VCenters) register(token string, request Request) {
 
 		for _, serviceAccount := range response.Embedded.ServiceAccounts {
 			if serviceAccount.Alias == vCenters.saAlias {
-				url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VCENTERS + "?action=register"
+				url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VCENTERS
 
-				vcRequest := VCenterRequest{vCenters.vcFqdn, vCenters.vcName, serviceAccount.UUID}
+				certificateThumbprint := getCertificateThumbprint(vCenters.vcFqdn, HTTPS_PORT, "sha1")
+
+				vcRequest := VCenterRequest{vCenters.vcFqdn, vCenters.vcName, serviceAccount.UUID, certificateThumbprint}
+
 				body, responseCode := processRequest(token, url, "POST", vcRequest)
 
 				if responseCode == 202 {

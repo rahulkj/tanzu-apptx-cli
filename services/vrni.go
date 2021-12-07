@@ -190,11 +190,12 @@ func (vRNI VRNI) register(token string, request Request) {
 	}
 
 	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VRNIS
+	certificateThumbprint := getCertificateThumbprint(vRNI.vrniFqdn, HTTPS_PORT, "sha1")
 
 	var vrniRequest VRNIRequest
 
 	if vRNI.isSaaS {
-		vrniRequest = VRNIRequest{vRNI.vrniFqdn, vRNI.vrniApiToken, vRNI.isSaaS, vCenterUUIDs, ""}
+		vrniRequest = VRNIRequest{vRNI.vrniFqdn, vRNI.vrniApiToken, vRNI.isSaaS, vCenterUUIDs, "", certificateThumbprint}
 	} else {
 		serviceAccounts := ServiceAccounts{}
 		response := serviceAccounts.findServiceAccount(vRNI.saAlias, token, request)
@@ -202,7 +203,7 @@ func (vRNI VRNI) register(token string, request Request) {
 		if len(response.Embedded.ServiceAccounts) > 0 {
 			for _, serviceAccount := range response.Embedded.ServiceAccounts {
 				if serviceAccount.Alias == vRNI.saAlias {
-					vrniRequest = VRNIRequest{vRNI.vrniFqdn, vRNI.vrniApiToken, vRNI.isSaaS, vCenterUUIDs, serviceAccount.UUID}
+					vrniRequest = VRNIRequest{vRNI.vrniFqdn, vRNI.vrniApiToken, vRNI.isSaaS, vCenterUUIDs, serviceAccount.UUID, certificateThumbprint}
 				} else {
 					log.Println("Cannot complete the operation as the Service Account does not exist")
 				}
@@ -261,6 +262,7 @@ func (vRNI VRNI) update(token string, request Request) {
 	for _, vrniResponse := range vrniResponses {
 		if vrniResponse.IP == vRNI.vrniFqdn {
 			url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VRNIS + "/" + vrniResponse.Id
+			certificateThumbprint := getCertificateThumbprint(vRNI.vrniFqdn, HTTPS_PORT, "sha1")
 
 			var vCenterUUIDs []string
 			for _, vCenter := range vrniResponse.VCenters {
@@ -270,7 +272,7 @@ func (vRNI VRNI) update(token string, request Request) {
 			var vrniRequest VRNIRequest
 
 			if vrniResponse.IsSaaS {
-				vrniRequest = VRNIRequest{vrniResponse.IP, vRNI.vrniApiToken, true, vCenterUUIDs, ""}
+				vrniRequest = VRNIRequest{vrniResponse.IP, vRNI.vrniApiToken, true, vCenterUUIDs, "", certificateThumbprint}
 			} else {
 				serviceAccounts := ServiceAccounts{}
 				response := serviceAccounts.findServiceAccount(vRNI.saAlias, token, request)
@@ -278,7 +280,7 @@ func (vRNI VRNI) update(token string, request Request) {
 				if len(response.Embedded.ServiceAccounts) > 0 {
 					for _, serviceAccount := range response.Embedded.ServiceAccounts {
 						if serviceAccount.Alias == vRNI.saAlias {
-							vrniRequest = VRNIRequest{vrniResponse.IP, "", false, vCenterUUIDs, serviceAccount.UUID}
+							vrniRequest = VRNIRequest{vrniResponse.IP, "", false, vCenterUUIDs, serviceAccount.UUID, certificateThumbprint}
 						} else {
 							log.Println("Cannot complete the operation as the Service Account does not exist")
 						}
@@ -305,6 +307,7 @@ func (vRNI VRNI) addVcenters(token string, request Request) {
 	for _, vrniResponse := range vrniResponses {
 		if vrniResponse.IP == vRNI.vrniFqdn {
 			url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VRNIS + "/" + vrniResponse.Id
+			certificateThumbprint := getCertificateThumbprint(vRNI.vrniFqdn, HTTPS_PORT, "md5")
 
 			var vCenterUUIDs []string
 			for _, vCenter := range vrniResponse.VCenters {
@@ -318,9 +321,9 @@ func (vRNI VRNI) addVcenters(token string, request Request) {
 
 			var vrniRequest VRNIRequest
 			if vrniResponse.IsSaaS {
-				vrniRequest = VRNIRequest{vrniResponse.IP, vrniResponse.ApiToken, vrniResponse.IsSaaS, vCenterUUIDs, ""}
+				vrniRequest = VRNIRequest{vrniResponse.IP, vrniResponse.ApiToken, vrniResponse.IsSaaS, vCenterUUIDs, "", certificateThumbprint}
 			} else {
-				vrniRequest = VRNIRequest{vrniResponse.IP, "", vrniResponse.IsSaaS, vCenterUUIDs, vrniResponse.ServiceAccount.UUID}
+				vrniRequest = VRNIRequest{vrniResponse.IP, "", vrniResponse.IsSaaS, vCenterUUIDs, vrniResponse.ServiceAccount.UUID, certificateThumbprint}
 			}
 
 			_, responseCode := processRequest(token, url, "PUT", vrniRequest)
@@ -342,6 +345,7 @@ func (vRNI VRNI) deleteVcenters(token string, request Request) {
 	for _, vrniResponse := range vrniResponses {
 		if vrniResponse.IP == vRNI.vrniFqdn {
 			url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + VRNIS + "/" + vrniResponse.Id
+			certificateThumbprint := getCertificateThumbprint(vRNI.vrniFqdn, HTTPS_PORT, "sha1")
 
 			var vCenterUUIDs []string
 			for _, vCenter := range vrniResponse.VCenters {
@@ -361,9 +365,9 @@ func (vRNI VRNI) deleteVcenters(token string, request Request) {
 
 			var vrniRequest VRNIRequest
 			if vrniResponse.IsSaaS {
-				vrniRequest = VRNIRequest{vrniResponse.IP, vrniResponse.ApiToken, vrniResponse.IsSaaS, vCenterUUIDs, ""}
+				vrniRequest = VRNIRequest{vrniResponse.IP, vrniResponse.ApiToken, vrniResponse.IsSaaS, vCenterUUIDs, "", certificateThumbprint}
 			} else {
-				vrniRequest = VRNIRequest{vrniResponse.IP, "", vrniResponse.IsSaaS, vCenterUUIDs, vrniResponse.ServiceAccount.UUID}
+				vrniRequest = VRNIRequest{vrniResponse.IP, "", vrniResponse.IsSaaS, vCenterUUIDs, vrniResponse.ServiceAccount.UUID, certificateThumbprint}
 			}
 
 			_, responseCode := processRequest(token, url, "PUT", vrniRequest)

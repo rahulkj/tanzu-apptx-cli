@@ -81,9 +81,10 @@ type response struct {
 }
 
 type VCenterRequest struct {
-	Fqdn                 string `json:"fqdn"`
-	VCName               string `json:"vcName"`
-	VCServiceAccountUUID string `json:"vcServiceAccountUUID"`
+	Fqdn                  string `json:"fqdn"`
+	VCName                string `json:"vcName"`
+	VCServiceAccountUUID  string `json:"vcServiceAccountUUID"`
+	CertificateThumbprint string `json:"certificateThumbprint"`
 }
 
 type VCenter struct {
@@ -157,11 +158,12 @@ type VirtualMachinesListResponse struct {
 }
 
 type VRNIRequest struct {
-	Fqdn               string   `json:"ip"`
-	ApiToken           string   `json:"apiToken"`
-	IsSaaS             bool     `json:"isSaas"`
-	VCenterUUIDs       []string `json:"vcUuids"`
-	ServiceAccountUUID string   `json:"serviceAccountUUID"`
+	Fqdn                  string   `json:"ip"`
+	ApiToken              string   `json:"apiToken"`
+	IsSaaS                bool     `json:"isSaas"`
+	VCenterUUIDs          []string `json:"vcUuids"`
+	ServiceAccountUUID    string   `json:"serviceAccountUUID"`
+	CertificateThumbprint string   `json:"certificateThumbprint"`
 }
 
 type VRNIResponse struct {
