@@ -16,8 +16,9 @@ type TaskResponse struct {
 
 func (task Tasks) MonitorTask(token string, taskID string, request Request) (status string) {
 	task_status := "UNKNOWN"
+	exitLoop := false
 
-	for task_status != "SUCCESS" {
+	for !exitLoop {
 		url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + TASKS + "/" + taskID
 		body, _ := processRequest(token, url, "GET", nil)
 
@@ -27,7 +28,13 @@ func (task Tasks) MonitorTask(token string, taskID string, request Request) (sta
 			log.Println("Failed to parse the response body.\n[ERROR] -", err)
 			os.Exit(1)
 		}
+
 		task_status = taskResponse.Status
+
+		if task_status != "IN_PROGRESS" {
+			exitLoop = true
+		}
+
 	}
 
 	return task_status

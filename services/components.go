@@ -26,37 +26,41 @@ func (components Components) Execute() {
 
 	switch components.operation {
 	case LIST:
-		componentsList := components.list(authResponse.Token)
-
-		if components.outputFormat == "table" {
-			w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.AlignRight|tabwriter.Debug)
-			fmt.Fprintln(w, "Component Name\tProcess Name\tComponent Type\tVM Name\tVM UUID\tService Type\tIs Containerizable")
-			for _, component := range componentsList.Embedded.Components {
-				fmt.Fprintln(w, component.CompName,
-					"\t", component.ProcessName, "\t", component.Type, "\t", component.VMName,
-					"\t", component.VMUUID, "\t", component.ServiceType, "\t", component.IsContainerizable)
-
-			}
-			w.Flush()
-		} else if components.outputFormat == "json" {
-			prettyJSON, err := json.MarshalIndent(componentsList, "", "    ")
-			if err != nil {
-				log.Fatal("Failed to generate json", err)
-			}
-			fmt.Printf("%s\n", string(prettyJSON))
-		} else if components.outputFormat == "csv" {
-			fmt.Println("Component Name,Process Name,Component Type,VM Name,VM UUID,Service Type,Is Containerizable")
-			for _, component := range componentsList.Embedded.Components {
-				fmt.Println(component.CompName,
-					",", component.ProcessName, ",", component.Type, ",", component.VMName,
-					",", component.VMUUID, ",", component.ServiceType, ",", component.IsContainerizable)
-
-			}
-		}
+		list(authResponse.Token, components)
 	default:
 		fmt.Println("Operation not supported")
 		components.printUsage()
 		os.Exit(1)
+	}
+}
+
+func list(token string, components Components) {
+	componentsList := components.list(token)
+
+	if components.outputFormat == "table" {
+		w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.AlignRight|tabwriter.Debug)
+		fmt.Fprintln(w, "Component Name\tProcess Name\tComponent Type\tVM Name\tVM UUID\tService Type\tIs Containerizable")
+		for _, component := range componentsList.Embedded.Components {
+			fmt.Fprintln(w, component.CompName,
+				"\t", component.ProcessName, "\t", component.Type, "\t", component.VMName,
+				"\t", component.VMUUID, "\t", component.ServiceType, "\t", component.IsContainerizable)
+
+		}
+		w.Flush()
+	} else if components.outputFormat == "json" {
+		prettyJSON, err := json.MarshalIndent(componentsList, "", "    ")
+		if err != nil {
+			log.Fatal("Failed to generate json", err)
+		}
+		fmt.Printf("%s\n", string(prettyJSON))
+	} else if components.outputFormat == "csv" {
+		fmt.Println("Component Name,Process Name,Component Type,VM Name,VM UUID,Service Type,Is Containerizable")
+		for _, component := range componentsList.Embedded.Components {
+			fmt.Println(component.CompName,
+				",", component.ProcessName, ",", component.Type, ",", component.VMName,
+				",", component.VMUUID, ",", component.ServiceType, ",", component.IsContainerizable)
+
+		}
 	}
 }
 

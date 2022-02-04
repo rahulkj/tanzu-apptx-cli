@@ -379,10 +379,12 @@ func (vCenters VCenters) scanComponents(token string, request Request) {
 		log.Println("Submitted the request and the taskID is:", tasks.TaskID)
 
 		status := tasks.MonitorTask(token, tasks.TaskID, request)
-		if status != "SUCCESS" {
-			log.Println("Failed to scan components running on the virtual machines managed by the provided vCenter")
-		} else {
+		if status == "PARTIAL_SUCCESS" {
+			log.Println("Partial Success in scanning components running on the virtual machines managed by the provided vCenter")
+		} else if status == "SUCCESS" {
 			log.Println("Successfully scanned components running on the virtual machines managed by the provided vCenter")
+		} else {
+			log.Println("Failed to scan components running on the virtual machines managed by the provided vCenter")
 		}
 	} else {
 		log.Println("Failed to scan components running on the virtual machines managed by the provided vCenter. Response Code:", responseCode)
