@@ -68,7 +68,7 @@ func (vRNI VRNI) validate() VRNI {
 	var vrniAPIToken string
 
 	if operation == REGISTER {
-		registerCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		registerCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		registerCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		registerCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		registerCmd.StringVar(&vrniFqdn, "vrni-fqdn", "", "vCenter FQDN")
@@ -90,7 +90,7 @@ func (vRNI VRNI) validate() VRNI {
 			os.Exit(1)
 		}
 	} else if operation == UNREGISTER {
-		unregisterCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		unregisterCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		unregisterCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		unregisterCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		unregisterCmd.StringVar(&vrniFqdn, "vrni-fqdn", "", "vCenter FQDN")
@@ -106,7 +106,7 @@ func (vRNI VRNI) validate() VRNI {
 			os.Exit(1)
 		}
 	} else if operation == UPDATE_CREDENTIALS {
-		updateCredentialsCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		updateCredentialsCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		updateCredentialsCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		updateCredentialsCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		updateCredentialsCmd.StringVar(&vrniFqdn, "vrni-fqdn", "", "vCenter FQDN")
@@ -125,7 +125,7 @@ func (vRNI VRNI) validate() VRNI {
 			os.Exit(1)
 		}
 	} else if operation == ADD_VCENTERS {
-		addVcentersCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		addVcentersCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		addVcentersCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		addVcentersCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		addVcentersCmd.StringVar(&vrniFqdn, "vrni-fqdn", "", "vCenter FQDN")
@@ -142,7 +142,7 @@ func (vRNI VRNI) validate() VRNI {
 			os.Exit(1)
 		}
 	} else if operation == REMOVE_VCENTERS {
-		removeVcentersCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		removeVcentersCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		removeVcentersCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		removeVcentersCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		removeVcentersCmd.StringVar(&vrniFqdn, "vrni-fqdn", "", "vCenter FQDN")

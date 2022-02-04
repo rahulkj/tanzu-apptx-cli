@@ -55,7 +55,7 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 	var saAlias string
 
 	if operation == REGISTER {
-		registerCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		registerCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		registerCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		registerCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		registerCmd.StringVar(&saUsername, "service-username", "", "service account username")
@@ -73,7 +73,7 @@ func (serviceAccounts ServiceAccounts) validate() ServiceAccounts {
 			os.Exit(1)
 		}
 	} else if operation == UNREGISTER {
-		unregisterCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		unregisterCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		unregisterCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		unregisterCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		unregisterCmd.StringVar(&saAlias, "sa-alias", "", "service account alias")
@@ -111,7 +111,7 @@ func (serviceAccounts ServiceAccounts) createServiceAccount(token string, reques
 		log.Println("Service Account already exists")
 	} else {
 		url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?action=register"
-		request := serviceAccountRequest{serviceAccounts.username, serviceAccounts.password, serviceAccounts.saAlias}
+		request := serviceAccountRequest{serviceAccounts.saUsername, serviceAccounts.saPassword, serviceAccounts.saAlias}
 		body, _ := processRequest(token, url, "POST", request)
 
 		serviceAccount := serviceAccount{}

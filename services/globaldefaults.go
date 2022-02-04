@@ -52,7 +52,7 @@ func (globalDefaults GlobalDefaults) validate() GlobalDefaults {
 	var saType string
 
 	if operation == ASSIGN {
-		assignCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		assignCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		assignCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		assignCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		assignCmd.StringVar(&saType, "service-account-type", "", "service account type, ex: VCs, VRNIs, LINUX_VMs")
@@ -69,7 +69,7 @@ func (globalDefaults GlobalDefaults) validate() GlobalDefaults {
 			os.Exit(1)
 		}
 	} else if operation == RESET {
-		resetCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		resetCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		resetCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		resetCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		resetCmd.StringVar(&saType, "service-account-type", "", "service account type, ex: VCs, VRNIs, LINUX_VMs")

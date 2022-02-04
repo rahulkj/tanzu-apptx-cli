@@ -95,7 +95,7 @@ func (virtualMachines VirtualMachines) validate() VirtualMachines {
 	var format string
 
 	if operation == LIST {
-		listCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		listCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		listCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		listCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		listCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
@@ -117,7 +117,7 @@ func (virtualMachines VirtualMachines) validate() VirtualMachines {
 			os.Exit(1)
 		}
 	} else if operation == INTROSPECT {
-		introspectCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		introspectCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		introspectCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		introspectCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		introspectCmd.StringVar(&vmName, "vm-name", "", "Virtual Machine Name")

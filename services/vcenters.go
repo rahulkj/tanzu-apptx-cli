@@ -79,7 +79,7 @@ func (vCenters VCenters) validate() VCenters {
 	var saAlias string
 
 	if operation == REGISTER {
-		registerCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		registerCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		registerCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		registerCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		registerCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
@@ -97,7 +97,7 @@ func (vCenters VCenters) validate() VCenters {
 			os.Exit(1)
 		}
 	} else if operation == UNREGISTER {
-		unregisterCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		unregisterCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		unregisterCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		unregisterCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		unregisterCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
@@ -115,7 +115,7 @@ func (vCenters VCenters) validate() VCenters {
 			os.Exit(1)
 		}
 	} else if operation == SYNC_VCENTERS {
-		syncVCenterCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		syncVCenterCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		syncVCenterCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		syncVCenterCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		syncVCenterCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
@@ -132,7 +132,7 @@ func (vCenters VCenters) validate() VCenters {
 			os.Exit(1)
 		}
 	} else if operation == SCAN_VIRTUAL_MACHINES {
-		scanVirtualMachinesCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		scanVirtualMachinesCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		scanVirtualMachinesCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		scanVirtualMachinesCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		scanVirtualMachinesCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
@@ -149,7 +149,7 @@ func (vCenters VCenters) validate() VCenters {
 			os.Exit(1)
 		}
 	} else if operation == SCAN_COMPONENTS {
-		scanComponentsCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		scanComponentsCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		scanComponentsCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		scanComponentsCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		scanComponentsCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")
@@ -166,7 +166,7 @@ func (vCenters VCenters) validate() VCenters {
 			os.Exit(1)
 		}
 	} else if operation == DISCOVER_TOPOLOGY {
-		discoverTopologyCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		discoverTopologyCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		discoverTopologyCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		discoverTopologyCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		discoverTopologyCmd.StringVar(&vcFqdn, "vc-fqdn", "", "vCenter FQDN")

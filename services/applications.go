@@ -81,7 +81,7 @@ func (applications Applications) validate() Applications {
 	var format string
 
 	if operation == LIST {
-		listCmd.StringVar(&url, "url", "", "Application Transformer URL, ex: appliance.example.com")
+		listCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		listCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		listCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		listCmd.StringVar(&format, "output-format", "table", "Output format - json,csv,table")
