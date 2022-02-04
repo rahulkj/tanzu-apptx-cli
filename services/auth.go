@@ -3,8 +3,8 @@ package services
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 )
 
@@ -18,13 +18,13 @@ func Authenticate(request Request) (authResponse AuthResponse) {
 	reqBody, err := json.Marshal(authRequest)
 
 	if err != nil {
-		log.Println("Failed to parse the request payload.\n[ERROR] -", err)
+		fmt.Println("Failed to parse the request payload.\n[ERROR] -", err)
 		os.Exit(1)
 	}
 
 	resp, err := client.Post(url, "application/json", bytes.NewBuffer(reqBody))
 	if err != nil {
-		log.Println("HTTP request failed.\n[ERROR] -", err)
+		fmt.Println("HTTP request failed.\n[ERROR] -", err)
 		os.Exit(1)
 	}
 
@@ -32,14 +32,14 @@ func Authenticate(request Request) (authResponse AuthResponse) {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Println("Unable to parse HTTP response.\n[ERROR] -", err)
+		fmt.Println("Unable to parse HTTP response.\n[ERROR] -", err)
 		os.Exit(1)
 	}
 
 	err = json.Unmarshal(body, &authResponse)
 
 	if err != nil {
-		log.Println("Failed to parse the response body.\n[ERROR] -", err)
+		fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 		os.Exit(1)
 	}
 

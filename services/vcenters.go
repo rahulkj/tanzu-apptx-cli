@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -210,28 +209,28 @@ func (vCenters VCenters) register(token string, request Request) {
 					tasks := Tasks{}
 					err := json.Unmarshal(body, &tasks)
 					if err != nil {
-						log.Println("Failed to parse the response body.\n[ERROR] -", err)
+						fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 						os.Exit(1)
 					}
 
-					log.Println("Submitted the request and the taskID is:", tasks.TaskID)
+					fmt.Println("Submitted the request and the taskID is:", tasks.TaskID)
 
 					status := tasks.MonitorTask(token, tasks.TaskID, request)
 					if status != "SUCCESS" {
-						log.Println("Failed to register vCenter with the provided information")
+						fmt.Println("Failed to register vCenter with the provided information")
 					} else {
-						log.Println("Successfully registered vCenter with the provided information")
+						fmt.Println("Successfully registered vCenter with the provided information")
 					}
 				} else {
-					log.Println("Failed to register vCenter with the provided information. Response Code:", responseCode)
+					fmt.Println("Failed to register vCenter with the provided information. Response Code:", responseCode)
 				}
 			} else {
-				log.Println("Cannot complete the operation as the Service Account does not exist")
+				fmt.Println("Cannot complete the operation as the Service Account does not exist")
 			}
 		}
 
 	} else {
-		log.Println("Cannot complete the operation as the Service Account does not exist")
+		fmt.Println("Cannot complete the operation as the Service Account does not exist")
 	}
 }
 
@@ -242,9 +241,9 @@ func (vCenters VCenters) unregister(token string, request Request) {
 	_, responseCode := processRequest(token, url, "DELETE", nil)
 
 	if responseCode == 200 {
-		log.Println("Successfully deleted vCenter")
+		fmt.Println("Successfully deleted vCenter")
 	} else {
-		log.Println("Failed to delete vCenter. Response Code: ", responseCode)
+		fmt.Println("Failed to delete vCenter. Response Code: ", responseCode)
 	}
 }
 
@@ -265,7 +264,7 @@ func (vCenters VCenters) findVCenter(token string, request Request) (response VC
 	vCenterResponse := VCenterListResponse{}
 	err := json.Unmarshal(body, &vCenterResponse)
 	if err != nil {
-		log.Println("Failed to parse the response body.\n[ERROR] -", err)
+		fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 		os.Exit(1)
 	}
 
@@ -274,11 +273,11 @@ func (vCenters VCenters) findVCenter(token string, request Request) (response VC
 			if (vCenter.VCName == vCenters.vcName) || (vCenter.Fqdn == vCenters.vcFqdn) {
 				response = vCenter
 			} else {
-				log.Println("Cannot find the vCenter as it does not exist")
+				fmt.Println("Cannot find the vCenter as it does not exist")
 			}
 		}
 	} else {
-		log.Println("Could not find the vCenter")
+		fmt.Println("Could not find the vCenter")
 	}
 
 	return response
@@ -310,20 +309,20 @@ func (vCenters VCenters) syncVcenters(token string, request Request) {
 		tasks := Tasks{}
 		err := json.Unmarshal(body, &tasks)
 		if err != nil {
-			log.Println("Failed to parse the response body.\n[ERROR] -", err)
+			fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 			os.Exit(1)
 		}
 
-		log.Println("Submitted the request and the taskID is:", tasks.TaskID)
+		fmt.Println("Submitted the request and the taskID is:", tasks.TaskID)
 
 		status := tasks.MonitorTask(token, tasks.TaskID, request)
 		if status != "SUCCESS" {
-			log.Println("Failed to execute sync on the vCenter provided")
+			fmt.Println("Failed to execute sync on the vCenter provided")
 		} else {
-			log.Println("Successfully executed sync on the vCenter provided")
+			fmt.Println("Successfully executed sync on the vCenter provided")
 		}
 	} else {
-		log.Println("Failed to execute sync on the vCenter provided. Response Code:", responseCode)
+		fmt.Println("Failed to execute sync on the vCenter provided. Response Code:", responseCode)
 	}
 }
 
@@ -341,20 +340,20 @@ func (vCenters VCenters) scanVirtualMachines(token string, request Request) {
 		tasks := Tasks{}
 		err := json.Unmarshal(body, &tasks)
 		if err != nil {
-			log.Println("Failed to parse the response body.\n[ERROR] -", err)
+			fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 			os.Exit(1)
 		}
 
-		log.Println("Submitted the request and the taskID is:", tasks.TaskID)
+		fmt.Println("Submitted the request and the taskID is:", tasks.TaskID)
 
 		status := tasks.MonitorTask(token, tasks.TaskID, request)
 		if status != "SUCCESS" {
-			log.Println("Failed to scan virtual machines managed by the provided vCenter")
+			fmt.Println("Failed to scan virtual machines managed by the provided vCenter")
 		} else {
-			log.Println("Successfully scanned virtual machines managed by the provided vCenter")
+			fmt.Println("Successfully scanned virtual machines managed by the provided vCenter")
 		}
 	} else {
-		log.Println("Failed to scan virtual machines managed by the provided vCenter. Response Code:", responseCode)
+		fmt.Println("Failed to scan virtual machines managed by the provided vCenter. Response Code:", responseCode)
 	}
 }
 
@@ -372,22 +371,22 @@ func (vCenters VCenters) scanComponents(token string, request Request) {
 		tasks := Tasks{}
 		err := json.Unmarshal(body, &tasks)
 		if err != nil {
-			log.Println("Failed to parse the response body.\n[ERROR] -", err)
+			fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 			os.Exit(1)
 		}
 
-		log.Println("Submitted the request and the taskID is:", tasks.TaskID)
+		fmt.Println("Submitted the request and the taskID is:", tasks.TaskID)
 
 		status := tasks.MonitorTask(token, tasks.TaskID, request)
 		if status == "PARTIAL_SUCCESS" {
-			log.Println("Partial Success in scanning components running on the virtual machines managed by the provided vCenter")
+			fmt.Println("Partial Success in scanning components running on the virtual machines managed by the provided vCenter")
 		} else if status == "SUCCESS" {
-			log.Println("Successfully scanned components running on the virtual machines managed by the provided vCenter")
+			fmt.Println("Successfully scanned components running on the virtual machines managed by the provided vCenter")
 		} else {
-			log.Println("Failed to scan components running on the virtual machines managed by the provided vCenter")
+			fmt.Println("Failed to scan components running on the virtual machines managed by the provided vCenter")
 		}
 	} else {
-		log.Println("Failed to scan components running on the virtual machines managed by the provided vCenter. Response Code:", responseCode)
+		fmt.Println("Failed to scan components running on the virtual machines managed by the provided vCenter. Response Code:", responseCode)
 	}
 }
 
@@ -405,19 +404,19 @@ func (vCenters VCenters) discoverTopology(token string, request Request) {
 		tasks := Tasks{}
 		err := json.Unmarshal(body, &tasks)
 		if err != nil {
-			log.Println("Failed to parse the response body.\n[ERROR] -", err)
+			fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 			os.Exit(1)
 		}
 
-		log.Println("Submitted the request and the taskID is:", tasks.TaskID)
+		fmt.Println("Submitted the request and the taskID is:", tasks.TaskID)
 
 		status := tasks.MonitorTask(token, tasks.TaskID, request)
 		if status != "SUCCESS" {
-			log.Println("Failed to discover topology for the provided vCenter")
+			fmt.Println("Failed to discover topology for the provided vCenter")
 		} else {
-			log.Println("Successfully discovered topology for the provided vCenter")
+			fmt.Println("Successfully discovered topology for the provided vCenter")
 		}
 	} else {
-		log.Println("Failed to discover topology for the provided vCenter. Response Code:", responseCode)
+		fmt.Println("Failed to discover topology for the provided vCenter. Response Code:", responseCode)
 	}
 }

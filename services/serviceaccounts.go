@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -108,7 +107,7 @@ func (serviceAccounts ServiceAccounts) createServiceAccount(token string, reques
 	response := serviceAccounts.findServiceAccount(serviceAccounts.saAlias, token, request)
 
 	if len(response.Embedded.ServiceAccounts) > 0 {
-		log.Println("Service Account already exists")
+		fmt.Println("Service Account already exists")
 	} else {
 		url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?action=register"
 		request := serviceAccountRequest{serviceAccounts.saUsername, serviceAccounts.saPassword, serviceAccounts.saAlias}
@@ -117,12 +116,12 @@ func (serviceAccounts ServiceAccounts) createServiceAccount(token string, reques
 		serviceAccount := serviceAccount{}
 		err := json.Unmarshal(body, &serviceAccount)
 		if err != nil {
-			log.Println("Failed to parse the response body.\n[ERROR] -", err)
+			fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 			os.Exit(1)
 		}
 
 		if len(serviceAccount.UUID) > 0 {
-			log.Println("Service Account created")
+			fmt.Println("Service Account created")
 		}
 	}
 }
@@ -133,7 +132,7 @@ func (serviceAccounts ServiceAccounts) findServiceAccount(alias string, token st
 
 	err := json.Unmarshal(body, &response)
 	if err != nil {
-		log.Println("Failed to parse the response body.\n[ERROR] -", err)
+		fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 		os.Exit(1)
 	}
 	return response
@@ -150,16 +149,16 @@ func (serviceAccounts ServiceAccounts) deleteServiceAccount(token string, reques
 				_, responseCode := processRequest(token, url, "DELETE", nil)
 
 				if responseCode == 200 {
-					log.Println("Deleted Service Account")
+					fmt.Println("Deleted Service Account")
 				} else {
-					log.Println("Failed to delete Service Account. Response Code:", responseCode)
+					fmt.Println("Failed to delete Service Account. Response Code:", responseCode)
 				}
 			} else {
-				log.Println("Cannot delete Service Account as it does not exist")
+				fmt.Println("Cannot delete Service Account as it does not exist")
 			}
 		}
 
 	} else {
-		log.Println("Cannot delete Service Account as it does not exist")
+		fmt.Println("Cannot delete Service Account as it does not exist")
 	}
 }

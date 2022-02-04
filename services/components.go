@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"text/tabwriter"
@@ -50,7 +49,7 @@ func list(token string, components Components) {
 	} else if components.outputFormat == "json" {
 		prettyJSON, err := json.MarshalIndent(componentsList, "", "    ")
 		if err != nil {
-			log.Fatal("Failed to generate json", err)
+			fmt.Println("Failed to generate json", err)
 		}
 		fmt.Printf("%s\n", string(prettyJSON))
 	} else if components.outputFormat == "csv" {
@@ -114,14 +113,14 @@ func (components Components) list(token string) (response ComponentsListResponse
 	body, responseCode := processRequest(token, url, "GET", nil)
 
 	if responseCode == 200 {
-		log.Println("Successfully fetched the list of components \n")
+		fmt.Println("Successfully fetched the list of components \n")
 	} else {
-		log.Println("Failed to fetch the list of components. Response code:", responseCode)
+		fmt.Println("Failed to fetch the list of components. Response code:", responseCode)
 	}
 
 	err := json.Unmarshal(body, &response)
 	if err != nil {
-		log.Println("Failed to parse the response body.\n[ERROR] -", err)
+		fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 		os.Exit(1)
 	}
 

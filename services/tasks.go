@@ -2,7 +2,7 @@ package services
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"os"
 )
 
@@ -25,7 +25,7 @@ func (task Tasks) MonitorTask(token string, taskID string, request Request) (sta
 		taskResponse := TaskResponse{}
 		err := json.Unmarshal(body, &taskResponse)
 		if err != nil {
-			log.Println("Failed to parse the response body.\n[ERROR] -", err)
+			fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 			os.Exit(1)
 		}
 

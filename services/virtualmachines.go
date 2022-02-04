@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"text/tabwriter"
@@ -49,7 +48,7 @@ func (virtualMachines VirtualMachines) Execute() {
 		} else if virtualMachines.outputFormat == "json" {
 			prettyJSON, err := json.MarshalIndent(virtualMachinesList, "", "    ")
 			if err != nil {
-				log.Fatal("Failed to generate json", err)
+				fmt.Println("Failed to generate json", err)
 			}
 			fmt.Printf("%s\n", string(prettyJSON))
 		} else if virtualMachines.outputFormat == "csv" {
@@ -182,14 +181,14 @@ func (virtualMachines VirtualMachines) list(token string) (response VirtualMachi
 	body, responseCode := processRequest(token, url, "GET", nil)
 
 	if responseCode == 200 {
-		log.Println("Successfully fetched the list of virtual machines \n")
+		fmt.Println("Successfully fetched the list of virtual machines \n")
 	} else {
-		log.Println("Failed to fetch the list of virtual machines. Response code:", responseCode)
+		fmt.Println("Failed to fetch the list of virtual machines. Response code:", responseCode)
 	}
 
 	err := json.Unmarshal(body, &response)
 	if err != nil {
-		log.Println("Failed to parse the response body.\n[ERROR] -", err)
+		fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 		os.Exit(1)
 	}
 
@@ -207,20 +206,20 @@ func (virtualMachines VirtualMachines) introspect(token string, request Request)
 			tasks := Tasks{}
 			err := json.Unmarshal(body, &tasks)
 			if err != nil {
-				log.Println("Failed to parse the response body.\n[ERROR] -", err)
+				fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 				os.Exit(1)
 			}
 
-			log.Println("Submitted the request and the taskID is:", tasks.TaskID)
+			fmt.Println("Submitted the request and the taskID is:", tasks.TaskID)
 
 			status := tasks.MonitorTask(token, tasks.TaskID, request)
 			if status != "SUCCESS" {
-				log.Println("Failed to execute sync on the vCenter provided")
+				fmt.Println("Failed to execute sync on the vCenter provided")
 			} else {
-				log.Println("Successfully executed sync on the vCenter provided")
+				fmt.Println("Successfully executed sync on the vCenter provided")
 			}
 		} else {
-			log.Println("Failed to execute sync on the vCenter provided. Response Code:", responseCode)
+			fmt.Println("Failed to execute sync on the vCenter provided. Response Code:", responseCode)
 		}
 	}
 }

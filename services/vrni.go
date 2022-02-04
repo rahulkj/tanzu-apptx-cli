@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -184,7 +183,7 @@ func (vRNI VRNI) register(token string, request Request) {
 	vrniResponses := vRNI.findAll(token, request)
 	for _, vrniResponse := range vrniResponses {
 		if vrniResponse.IP == vRNI.vrniFqdn {
-			log.Println("vRNI is already registered")
+			fmt.Println("vRNI is already registered")
 			os.Exit(1)
 		}
 	}
@@ -205,20 +204,20 @@ func (vRNI VRNI) register(token string, request Request) {
 				if serviceAccount.Alias == vRNI.saAlias {
 					vrniRequest = VRNIRequest{vRNI.vrniFqdn, vRNI.vrniApiToken, vRNI.isSaaS, vCenterUUIDs, serviceAccount.UUID, certificateThumbprint}
 				} else {
-					log.Println("Cannot complete the operation as the Service Account does not exist")
+					fmt.Println("Cannot complete the operation as the Service Account does not exist")
 				}
 			}
 		} else {
-			log.Println("Cannot complete the operation as the Service Account does not exist")
+			fmt.Println("Cannot complete the operation as the Service Account does not exist")
 		}
 	}
 
 	_, responseCode := processRequest(token, url, "POST", vrniRequest)
 
 	if responseCode == 200 {
-		log.Println("Successfully registered vRNI with the provided information")
+		fmt.Println("Successfully registered vRNI with the provided information")
 	} else {
-		log.Println("Failed to register vRNI with the provided information. Response Code:", responseCode)
+		fmt.Println("Failed to register vRNI with the provided information. Response Code:", responseCode)
 	}
 }
 
@@ -230,12 +229,12 @@ func (vRNI VRNI) unregister(token string, request Request) {
 			_, responseCode := processRequest(token, url, "DELETE", nil)
 
 			if responseCode == 204 {
-				log.Println("Successfully deleted vRNI with the provided information")
+				fmt.Println("Successfully deleted vRNI with the provided information")
 			} else {
-				log.Println("Failed to delete vRNI with the provided information. Response Code:", responseCode)
+				fmt.Println("Failed to delete vRNI with the provided information. Response Code:", responseCode)
 			}
 		} else {
-			log.Println("Could not find the vRNI instance provided")
+			fmt.Println("Could not find the vRNI instance provided")
 		}
 	}
 }
@@ -248,11 +247,11 @@ func (vRNI VRNI) findAll(token string, request Request) (response []VRNIResponse
 	if responseCode == 200 {
 		err := json.Unmarshal(body, &response)
 		if err != nil {
-			log.Println("Failed to parse the response body.\n[ERROR] -", err)
+			fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 			os.Exit(1)
 		}
 	} else {
-		log.Println("Failed to register vRNI with the provided information")
+		fmt.Println("Failed to register vRNI with the provided information")
 	}
 
 	return response
@@ -282,23 +281,23 @@ func (vRNI VRNI) update(token string, request Request) {
 						if serviceAccount.Alias == vRNI.saAlias {
 							vrniRequest = VRNIRequest{vrniResponse.IP, "", false, vCenterUUIDs, serviceAccount.UUID, certificateThumbprint}
 						} else {
-							log.Println("Cannot complete the operation as the Service Account does not exist")
+							fmt.Println("Cannot complete the operation as the Service Account does not exist")
 						}
 					}
 				} else {
-					log.Println("Cannot complete the operation as the Service Account does not exist")
+					fmt.Println("Cannot complete the operation as the Service Account does not exist")
 				}
 			}
 
 			_, responseCode := processRequest(token, url, "PUT", vrniRequest)
 
 			if responseCode == 200 {
-				log.Println("Successfully updated vRNI credentials with the provided information")
+				fmt.Println("Successfully updated vRNI credentials with the provided information")
 			} else {
-				log.Println("Failed to update vRNI with the provided information. Response Code:", responseCode)
+				fmt.Println("Failed to update vRNI with the provided information. Response Code:", responseCode)
 			}
 		} else {
-			log.Println("Could not find the vRNI instance provided")
+			fmt.Println("Could not find the vRNI instance provided")
 		}
 	}
 }
@@ -329,12 +328,12 @@ func (vRNI VRNI) addVcenters(token string, request Request) {
 			_, responseCode := processRequest(token, url, "PUT", vrniRequest)
 
 			if responseCode == 200 {
-				log.Println("Successfully added the vCenters to vRNI with the provided information")
+				fmt.Println("Successfully added the vCenters to vRNI with the provided information")
 			} else {
-				log.Println("Failed to add vCenters to vRNI with the provided information. Response Code:", responseCode)
+				fmt.Println("Failed to add vCenters to vRNI with the provided information. Response Code:", responseCode)
 			}
 		} else {
-			log.Println("Could not find the vRNI instance provided")
+			fmt.Println("Could not find the vRNI instance provided")
 		}
 
 	}
@@ -373,12 +372,12 @@ func (vRNI VRNI) deleteVcenters(token string, request Request) {
 			_, responseCode := processRequest(token, url, "PUT", vrniRequest)
 
 			if responseCode == 200 {
-				log.Println("Successfully removed the vCenters from vRNI with the provided information")
+				fmt.Println("Successfully removed the vCenters from vRNI with the provided information")
 			} else {
-				log.Println("Failed to remove vCenters from vRNI with the provided information. Response Code:", responseCode)
+				fmt.Println("Failed to remove vCenters from vRNI with the provided information. Response Code:", responseCode)
 			}
 		} else {
-			log.Println("Could not find the vRNI instance provided")
+			fmt.Println("Could not find the vRNI instance provided")
 		}
 
 	}

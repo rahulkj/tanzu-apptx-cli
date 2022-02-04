@@ -3,7 +3,6 @@ package services
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -114,17 +113,17 @@ func (globalDefaults GlobalDefaults) assign(token string, request Request) {
 				_, responseCode := processRequest(token, url, "POST", request)
 
 				if responseCode == 200 {
-					log.Println("Successfully assigned the service credential to the global default")
+					fmt.Println("Successfully assigned the service credential to the global default")
 				} else {
-					log.Println("Failed to assign the service credential to the global default. Response code:", responseCode)
+					fmt.Println("Failed to assign the service credential to the global default. Response code:", responseCode)
 				}
 			} else {
-				log.Println("Cannot complete the operation as the Service Account does not exist")
+				fmt.Println("Cannot complete the operation as the Service Account does not exist")
 			}
 		}
 
 	} else {
-		log.Println("Cannot complete the operation as the Service Account does not exist")
+		fmt.Println("Cannot complete the operation as the Service Account does not exist")
 	}
 }
 
@@ -133,8 +132,8 @@ func (globalDefaults GlobalDefaults) reset(token string) {
 	_, responseCode := processRequest(token, url, "DELETE", nil)
 
 	if responseCode == 200 {
-		log.Println("Successfully reset the global default")
+		fmt.Println("Successfully reset the global default")
 	} else {
-		log.Println("Failed to reset the global default. Response code:", responseCode)
+		fmt.Println("Failed to reset the global default. Response code:", responseCode)
 	}
 }

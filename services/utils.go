@@ -10,7 +10,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -34,7 +33,7 @@ func processRequest(token string, url string, method string, payload interface{}
 		reqBody, err := json.Marshal(payload)
 
 		if err != nil {
-			log.Println("Failed to parse the request payload.\n[ERROR] -", err)
+			fmt.Println("Failed to parse the request payload.\n[ERROR] -", err)
 			os.Exit(1)
 		}
 		req, _ = http.NewRequest(method, url, bytes.NewBuffer(reqBody))
@@ -47,7 +46,7 @@ func processRequest(token string, url string, method string, payload interface{}
 
 	resp, err := getHTTPSClient().Do(req)
 	if err != nil {
-		log.Println("HTTP request failed.\n[ERROR] -", err)
+		fmt.Println("HTTP request failed.\n[ERROR] -", err)
 		os.Exit(1)
 	}
 
@@ -55,7 +54,7 @@ func processRequest(token string, url string, method string, payload interface{}
 
 	body, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Println("Unable to parse HTTP response.\n[ERROR] -", err)
+		fmt.Println("Unable to parse HTTP response.\n[ERROR] -", err)
 		os.Exit(1)
 	}
 

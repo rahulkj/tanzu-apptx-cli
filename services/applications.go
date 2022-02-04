@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"text/tabwriter"
@@ -44,7 +43,7 @@ func (applications Applications) Execute() {
 		} else if applications.outputFormat == "json" {
 			prettyJSON, err := json.MarshalIndent(applicationsList, "", "    ")
 			if err != nil {
-				log.Fatal("Failed to generate json", err)
+				fmt.Println("Failed to generate json", err)
 			}
 			fmt.Printf("%s\n", string(prettyJSON))
 		} else if applications.outputFormat == "csv" {
@@ -116,14 +115,14 @@ func (applications Applications) list(token string) (response ApplicationsListRe
 	body, responseCode := processRequest(token, url, "GET", nil)
 
 	if responseCode == 200 {
-		log.Println("Successfully fetched the list of applications \n")
+		fmt.Println("Successfully fetched the list of applications \n")
 	} else {
-		log.Println("Failed to fetch the list of application. Response code:", responseCode)
+		fmt.Println("Failed to fetch the list of application. Response code:", responseCode)
 	}
 
 	err := json.Unmarshal(body, &response)
 	if err != nil {
-		log.Println("Failed to parse the response body.\n[ERROR] -", err)
+		fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 		os.Exit(1)
 	}
 
