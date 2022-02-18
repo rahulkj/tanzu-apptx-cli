@@ -19,11 +19,11 @@ jobs:
 
     - name: Build Artifacts for OSX, Linux, Windows
       run: |
-        set +e
+        set +ex
         TAG_VERSION=$(git describe --tags)
-        set -e
+        set -ex
 
-        LD_FLAGS_VERSION="-X \"main.Version=${TAG_VERSION:-'v1.0.0-dev'}\""
+        LD_FLAGS_VERSION="-X \"main.Version=${TAG_VERSION:-'v1.0.2-dev'}\""
 
         go version
         mkdir output
