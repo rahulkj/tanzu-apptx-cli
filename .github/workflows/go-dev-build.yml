@@ -24,7 +24,7 @@ jobs:
         TAG_VERSION=$(git describe --tags)
         set -e
 
-        LD_FLAGS_VERSION="-X \"main.Version=${TAG_VERSION:-'v1.0.2'}\""
+        LD_FLAGS_VERSION="-X \"main.Version=${TAG_VERSION:-'v1.0.3'}\""
 
         go version
         mkdir out
