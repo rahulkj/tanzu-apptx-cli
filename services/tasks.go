@@ -15,7 +15,7 @@ type TaskResponse struct {
 }
 
 func (task Tasks) MonitorTask(token string, taskID string, request Request) (status string) {
-	task_status := "UNKNOWN"
+	task_status := "NOT_STARTED"
 	exitLoop := false
 
 	for !exitLoop {
@@ -33,7 +33,7 @@ func (task Tasks) MonitorTask(token string, taskID string, request Request) (sta
 
 		fmt.Println("Task status is: ", task_status)
 
-		if task_status != "IN_PROGRESS" {
+		if task_status != "IN_PROGRESS" && task_status != "NOT_STARTED" {
 			exitLoop = true
 		}
 
