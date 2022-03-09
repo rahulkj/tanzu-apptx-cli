@@ -31,8 +31,6 @@ func (task Tasks) MonitorTask(token string, taskID string, request Request) (sta
 
 		task_status = taskResponse.Status
 
-		fmt.Println("Task status is: ", task_status)
-
 		if task_status != "IN_PROGRESS" && task_status != "NOT_STARTED" {
 			exitLoop = true
 		}
