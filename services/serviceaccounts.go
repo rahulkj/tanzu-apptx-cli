@@ -109,7 +109,7 @@ func (serviceAccounts ServiceAccounts) createServiceAccount(token string, reques
 	if len(response.Embedded.ServiceAccounts) > 0 {
 		fmt.Println("Service Account already exists")
 	} else {
-		url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?action=register"
+		url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS
 		request := serviceAccountRequest{serviceAccounts.saUsername, serviceAccounts.saPassword, serviceAccounts.saAlias}
 		body, _ := processRequest(token, url, "POST", request)
 
@@ -127,7 +127,7 @@ func (serviceAccounts ServiceAccounts) createServiceAccount(token string, reques
 }
 
 func (serviceAccounts ServiceAccounts) findServiceAccount(alias string, token string, request Request) (response response) {
-	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?page=0&size=10&alias=" + alias
+	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SERVICE_ACCOUNTS + "?size=10&sort=modified,DESC&alias=" + alias
 	body, _ := processRequest(token, url, "GET", nil)
 
 	err := json.Unmarshal(body, &response)

@@ -12,9 +12,9 @@ type AuthRequest struct {
 }
 
 type AuthResponse struct {
-	Token string `json:"token"`
+	Token        string `json:"Set-Cookie"`
+	RefreshToken string `json:"token"`
 }
-
 type ApplicationsListResponse struct {
 	Embedded struct {
 		Applications []struct {
@@ -158,20 +158,24 @@ type VirtualMachinesListResponse struct {
 }
 
 type VRNIRequest struct {
+	Alias                 string   `json:"alias"`
 	Fqdn                  string   `json:"ip"`
 	ApiToken              string   `json:"apiToken"`
 	IsSaaS                bool     `json:"isSaas"`
 	VCenterUUIDs          []string `json:"vcUuids"`
 	ServiceAccountUUID    string   `json:"serviceAccountUUID"`
 	CertificateThumbprint string   `json:"certificateThumbprint"`
+	ServiceAccountType    string   `json:"vrniType"`
 }
 
 type VRNIResponse struct {
-	Id       string `json:"id"`
-	IP       string `json:"ip"`
-	IsSaaS   bool   `json:"isSaaS`
-	ApiToken string `json:"apiToken`
-	VCenters []struct {
+	Alias              string `json:"alias"`
+	Id                 string `json:"id"`
+	IP                 string `json:"ip"`
+	ServiceAccountType string `json:"vrniType"`
+	IsSaaS             bool   `json:"isSaaS`
+	ApiToken           string `json:"apiToken`
+	VCenters           []struct {
 		Fqdn        string `json:"fqdn"`
 		VCenterUUID string `json:"irisVcenterUUID"`
 		VCName      string `json:"vcName"`
