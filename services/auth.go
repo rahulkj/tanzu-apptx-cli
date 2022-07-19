@@ -14,7 +14,7 @@ func Authenticate(request Request) (authResponse AuthResponse) {
 
 	client := getHTTPSClient()
 
-	url := PROTOCOL + "://" + request.URL + "/" + PREFIX + "/" + SESSION
+	url := PROTOCOL + "://" + request.URL + "/" + AUTHMANAGER + "/" + SESSION
 	reqBody, err := json.Marshal(authRequest)
 
 	if err != nil {
@@ -41,6 +41,12 @@ func Authenticate(request Request) (authResponse AuthResponse) {
 	if err != nil {
 		fmt.Println("Failed to parse the response body.\n[ERROR] -", err)
 		os.Exit(1)
+	}
+
+	for _, cookie := range resp.Cookies() {
+		if cookie.Name == AUTH_TOKEN {
+			authResponse.Token = cookie.Value
+		}
 	}
 
 	return authResponse

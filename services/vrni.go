@@ -9,15 +9,17 @@ import (
 )
 
 type VRNI struct {
-	url          string
-	username     string
-	password     string
-	saAlias      string
-	vrniFqdn     string
-	vcNames      string
-	isSaaS       bool
-	vrniApiToken string
-	operation    string
+	alias              string
+	url                string
+	username           string
+	password           string
+	saAlias            string
+	serviceAccountType string
+	vrniFqdn           string
+	vcNames            string
+	isSaaS             bool
+	vrniApiToken       string
+	operation          string
 }
 
 func (vRNI VRNI) Execute() {
@@ -57,6 +59,7 @@ func (vRNI VRNI) validate() VRNI {
 
 	operation := os.Args[2]
 
+	var alias string
 	var url string
 	var username string
 	var password string
@@ -65,14 +68,17 @@ func (vRNI VRNI) validate() VRNI {
 	var saAlias string
 	var isSaaS bool
 	var vrniAPIToken string
+	var serviceAccountType string
 
 	if operation == REGISTER {
+		registerCmd.StringVar(&alias, "vrni-name", "", "vRNI Name")
 		registerCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		registerCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		registerCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		registerCmd.StringVar(&vrniFqdn, "vrni-fqdn", "", "vCenter FQDN")
 		registerCmd.StringVar(&vcNames, "vc-names", "", "comma separated list of vCenter Name(s)")
 		registerCmd.StringVar(&saAlias, "sa-alias", "", "vRNI service account alias")
+		registerCmd.StringVar(&serviceAccountType, "sa-account-type", "", "vRNI service account type, ex: LOCAL or LDAP")
 		registerCmd.BoolVar(&isSaaS, "isSaaS", false, "using a SaaS vRNI instance, default is false")
 		registerCmd.StringVar(&vrniAPIToken, "vrni-api-token", "", "SaaS vRNI api token")
 
@@ -82,7 +88,7 @@ func (vRNI VRNI) validate() VRNI {
 			(len(vrniFqdn) == 0 || len(vcNames) == 0) ||
 			(strings.Contains(url, "https://")) ||
 			(isSaaS && len(vrniAPIToken) == 0 && len(saAlias) != 0) ||
-			(!isSaaS && len(saAlias) == 0 && len(vrniAPIToken) != 0) {
+			(!isSaaS && len(saAlias) == 0 && len(vrniAPIToken) != 0 && len(serviceAccountType) == 0) || len(alias) == 0 {
 			fmt.Printf("Usage: '%s %s %s [flags]' \n", CLI_NAME, VRNI_CMD, REGISTER)
 			fmt.Println("Available Flags:")
 			registerCmd.PrintDefaults()
@@ -105,11 +111,13 @@ func (vRNI VRNI) validate() VRNI {
 			os.Exit(1)
 		}
 	} else if operation == UPDATE_CREDENTIALS {
+		updateCredentialsCmd.StringVar(&alias, "vrni-name", "", "vRNI Name")
 		updateCredentialsCmd.StringVar(&url, "fqdn", "", "Application Transformer FQDN / IP, ex: appliance.example.com")
 		updateCredentialsCmd.StringVar(&username, "username", "", "Application Transformer admin username")
 		updateCredentialsCmd.StringVar(&password, "password", "", "Application Transformer admin password")
 		updateCredentialsCmd.StringVar(&vrniFqdn, "vrni-fqdn", "", "vCenter FQDN")
 		updateCredentialsCmd.StringVar(&saAlias, "sa-alias", "", "vRNI service account alias")
+		updateCredentialsCmd.StringVar(&serviceAccountType, "sa-account-type", "", "vRNI service account type, ex: LOCAL or LDAP")
 		updateCredentialsCmd.StringVar(&vrniAPIToken, "vrni-api-token", "", "SaaS vRNI api token")
 
 		updateCredentialsCmd.Parse(os.Args[3:])
@@ -161,7 +169,7 @@ func (vRNI VRNI) validate() VRNI {
 		vRNI.printUsage()
 	}
 
-	vRNI = VRNI{url, username, password, saAlias, vrniFqdn, vcNames, isSaaS, vrniAPIToken, operation}
+	vRNI = VRNI{alias, url, username, password, saAlias, serviceAccountType, vrniFqdn, vcNames, isSaaS, vrniAPIToken, operation}
 	return vRNI
 }
 
@@ -194,7 +202,7 @@ func (vRNI VRNI) register(token string, request Request) {
 	var vrniRequest VRNIRequest
 
 	if vRNI.isSaaS {
-		vrniRequest = VRNIRequest{vRNI.vrniFqdn, vRNI.vrniApiToken, vRNI.isSaaS, vCenterUUIDs, "", certificateThumbprint}
+		vrniRequest = VRNIRequest{vRNI.alias, vRNI.vrniFqdn, vRNI.vrniApiToken, vRNI.isSaaS, vCenterUUIDs, "", certificateThumbprint, ""}
 	} else {
 		serviceAccounts := ServiceAccounts{}
 		response := serviceAccounts.findServiceAccount(vRNI.saAlias, token, request)
@@ -202,7 +210,7 @@ func (vRNI VRNI) register(token string, request Request) {
 		if len(response.Embedded.ServiceAccounts) > 0 {
 			for _, serviceAccount := range response.Embedded.ServiceAccounts {
 				if serviceAccount.Alias == vRNI.saAlias {
-					vrniRequest = VRNIRequest{vRNI.vrniFqdn, vRNI.vrniApiToken, vRNI.isSaaS, vCenterUUIDs, serviceAccount.UUID, certificateThumbprint}
+					vrniRequest = VRNIRequest{vRNI.alias, vRNI.vrniFqdn, vRNI.vrniApiToken, vRNI.isSaaS, vCenterUUIDs, serviceAccount.UUID, certificateThumbprint, vRNI.serviceAccountType}
 				} else {
 					fmt.Println("Cannot complete the operation as the Service Account does not exist")
 				}
@@ -271,7 +279,7 @@ func (vRNI VRNI) update(token string, request Request) {
 			var vrniRequest VRNIRequest
 
 			if vrniResponse.IsSaaS {
-				vrniRequest = VRNIRequest{vrniResponse.IP, vRNI.vrniApiToken, true, vCenterUUIDs, "", certificateThumbprint}
+				vrniRequest = VRNIRequest{vrniResponse.Alias, vrniResponse.IP, vRNI.vrniApiToken, true, vCenterUUIDs, "", certificateThumbprint, ""}
 			} else {
 				serviceAccounts := ServiceAccounts{}
 				response := serviceAccounts.findServiceAccount(vRNI.saAlias, token, request)
@@ -279,7 +287,7 @@ func (vRNI VRNI) update(token string, request Request) {
 				if len(response.Embedded.ServiceAccounts) > 0 {
 					for _, serviceAccount := range response.Embedded.ServiceAccounts {
 						if serviceAccount.Alias == vRNI.saAlias {
-							vrniRequest = VRNIRequest{vrniResponse.IP, "", false, vCenterUUIDs, serviceAccount.UUID, certificateThumbprint}
+							vrniRequest = VRNIRequest{vRNI.alias, vrniResponse.IP, "", false, vCenterUUIDs, serviceAccount.UUID, certificateThumbprint, vRNI.serviceAccountType}
 						} else {
 							fmt.Println("Cannot complete the operation as the Service Account does not exist")
 						}
@@ -320,9 +328,9 @@ func (vRNI VRNI) addVcenters(token string, request Request) {
 
 			var vrniRequest VRNIRequest
 			if vrniResponse.IsSaaS {
-				vrniRequest = VRNIRequest{vrniResponse.IP, vrniResponse.ApiToken, vrniResponse.IsSaaS, vCenterUUIDs, "", certificateThumbprint}
+				vrniRequest = VRNIRequest{vrniResponse.Alias, vrniResponse.IP, vrniResponse.ApiToken, vrniResponse.IsSaaS, vCenterUUIDs, "", certificateThumbprint, ""}
 			} else {
-				vrniRequest = VRNIRequest{vrniResponse.IP, "", vrniResponse.IsSaaS, vCenterUUIDs, vrniResponse.ServiceAccount.UUID, certificateThumbprint}
+				vrniRequest = VRNIRequest{vrniResponse.Alias, vrniResponse.IP, "", vrniResponse.IsSaaS, vCenterUUIDs, vrniResponse.ServiceAccount.UUID, certificateThumbprint, vrniResponse.ServiceAccountType}
 			}
 
 			_, responseCode := processRequest(token, url, "PUT", vrniRequest)
@@ -364,9 +372,9 @@ func (vRNI VRNI) deleteVcenters(token string, request Request) {
 
 			var vrniRequest VRNIRequest
 			if vrniResponse.IsSaaS {
-				vrniRequest = VRNIRequest{vrniResponse.IP, vrniResponse.ApiToken, vrniResponse.IsSaaS, vCenterUUIDs, "", certificateThumbprint}
+				vrniRequest = VRNIRequest{vrniResponse.Alias, vrniResponse.IP, vrniResponse.ApiToken, vrniResponse.IsSaaS, vCenterUUIDs, "", certificateThumbprint, ""}
 			} else {
-				vrniRequest = VRNIRequest{vrniResponse.IP, "", vrniResponse.IsSaaS, vCenterUUIDs, vrniResponse.ServiceAccount.UUID, certificateThumbprint}
+				vrniRequest = VRNIRequest{vrniResponse.Alias, vrniResponse.IP, "", vrniResponse.IsSaaS, vCenterUUIDs, vrniResponse.ServiceAccount.UUID, certificateThumbprint, vrniResponse.ServiceAccountType}
 			}
 
 			_, responseCode := processRequest(token, url, "PUT", vrniRequest)
